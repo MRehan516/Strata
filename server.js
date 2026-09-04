@@ -225,7 +225,7 @@ app.post('/api/workspaces/:id/signoffs', (req, res) => {
   if (!VERDICTS.includes(verdict)) return res.status(400).json({ error: 'verdict must be approved or rejected' });
   db.setLayerStatus(id, layer.id, verdict, note, reviewer);
   db.addActivity({ ws_id: id, ts: Date.now(), actor, action: 'layer.signed', detail: `${layer.id} → ${verdict} by ${reviewer}` });
-  broadcast(id, 'layer.signed', { id: layer.id, status: verdict, reviewer, note });
+  broadcast(id, 'layer.signed', { id: layer.id, status: verdict, reviewer, note, actor });
   res.json({ id: layer.id, status: verdict, reviewer, note });
 });
 
