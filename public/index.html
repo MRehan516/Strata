@@ -253,6 +253,25 @@ h1 em{font-style:italic;font-weight:480;color:var(--accent)}
 .feed .when{margin-left:auto;color:var(--ink-soft);flex:none;font-size:11.5px}
 
 .obx{background:var(--bg-raised);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:24px}
+.agx{background:var(--bg-raised);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:28px}
+.agx-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.agx-status{font:500 13.5px var(--font-body);color:var(--ink-soft);text-align:right}
+.agx-status b.ok{color:var(--accent)}
+.agx-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,4fr);gap:20px}
+.agx p{color:var(--ink-soft);font-size:13.5px;margin-bottom:8px}
+.agx ol{margin:6px 0 10px 18px;color:var(--ink-soft);font-size:13.5px}
+.agx ol li{margin-bottom:4px}
+.agx .mono{font-size:10px}
+.prompts{display:flex;flex-direction:column;gap:8px}
+.prompt{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;text-align:left;width:100%;transition:border-color .2s}
+.prompt:hover{border-color:var(--accent)}
+.prompt span{display:block;font:500 13px/1.5 var(--font-body);color:var(--ink);text-align:left}
+.prompt small{display:block;margin-top:3px;font:600 9.5px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);text-align:left}
+.aglog{list-style:none;max-height:190px;overflow:auto;border-top:1px solid var(--line);padding-top:8px;margin-top:4px}
+.aglog li{display:flex;gap:8px;padding:5px 0;font:500 12px/1.5 var(--font-mono);border-bottom:1px dashed var(--line)}
+.aglog li b{color:var(--accent)}
+.aglog li .t{margin-left:auto;color:var(--ink-soft);flex:none}
+@media (max-width:1000px){.agx-grid{grid-template-columns:1fr}}
 .obx-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .obx ol{list-style:none;display:flex;flex-direction:column;gap:8px}
 .obx li{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ink-soft);transition:color .3s}
@@ -512,7 +531,7 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
     <div class="sb-sec sb-about">
       <h4 class="mono">About</h4>
       <p><b>Strata</b> — a versioned decision ledger. Every spec, decision and release is an append-only layer, signed by a named human, and operable by your AI agent over WebMCP.</p>
-      <p>Built for the WebMCP Challenge · <span id="sbVer">v1.4.0</span> · MIT license.</p>
+      <p>Built for the WebMCP Challenge · <span id="sbVer">v1.4.1</span> · MIT license.</p>
       <p><a href="https://github.com/webmachinelearning/webmcp" target="_blank" rel="noopener">WebMCP specification ↗</a></p>
       <p class="sb-note">No user accounts — privacy is per-workspace: optional passwords, unlock keys stored only in this browser. Server workspaces are shared by link.</p>
     </div>
@@ -782,7 +801,7 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
           <li data-ob="layer"><span class="box">✓</span><span><b>Add your first layer</b> — a spec, decision, prototype or release, with the big form below-left.</span></li>
           <li data-ob="sign"><span class="box">✓</span><span><b>Sign one off</b> — type the reviewer’s name on a layer card and approve or reject it.</span></li>
           <li data-ob="export"><span class="box">✓</span><span><b>Export something</b> — a diagram, release notes, JSON or CSV.</span></li>
-          <li data-ob="agent"><span class="box">✓</span><span><b>Let your agent act</b> — in ChatGPT’s in-app browser or flagged Chrome, paste the prompt from the overview page and watch the feed.</span></li>
+          <li data-ob="agent"><span class="box">✓</span><span><b>Let your agent act</b> — open the <b>Agent console</b> above, copy the URL into ChatGPT (or use flagged Chrome), paste a ready-made prompt, and watch the tool log fill. The agent can’t run inside this tab — it lives in the agent’s own chat.</span></li>
         </ol>
       </div>
 
@@ -798,6 +817,36 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
         <span class="spacer"></span>
         <button class="mono reset" id="copyLink" type="button">copy link</button>
         <button class="mono reset" id="switchWs" type="button">switch workspace</button>
+      </div>
+
+      <!-- AGENT CONSOLE — where the agent lives, what it can do, live log of its calls -->
+      <div class="agx" id="agentConsole">
+        <div class="agx-head">
+          <h4 class="mono" style="margin:0">🤖 Agent console — your AI co-operator</h4>
+          <span class="agx-status" id="agxStatus">checking WebMCP…</span>
+        </div>
+        <div class="agx-grid">
+          <div>
+            <p><b>The agent is not inside this page — it lives in your agent's browser.</b> Strata publishes 10 tools (add layers, record sign-offs, diff versions, draft releases, export…). An agent that speaks WebMCP calls them on the same ledger you're editing — and every call is logged live, on the right.</p>
+            <p class="mono dim" style="margin-bottom:6px">Where the agent lives — 3 steps</p>
+            <ol>
+              <li>Copy this page's URL (button below).</li>
+              <li><b>ChatGPT:</b> paste the URL into ChatGPT and ask it to open the page — its in-app browser supports WebMCP out of the box. &nbsp;<b>Or Chrome 149+:</b> enable <span class="mono">chrome://flags/#enable-webmcp-testing</span>, relaunch, reopen this page.</li>
+              <li>Paste a prompt from the right — then watch the Activity feed and the tool log react in real time.</li>
+            </ol>
+            <button class="tlink" id="agxCopyUrl" type="button">Copy this page's URL for the agent</button>
+          </div>
+          <div>
+            <p class="mono dim" style="margin-bottom:6px">Ready-made prompts — click to copy, then paste into the agent's chat</p>
+            <div class="prompts">
+              <button class="prompt" type="button" data-prompt="List the layers, add a decision layer called 'Adopt saved cards' with a one-line summary, then draft release notes."><span>“List the layers, add a decision layer ‘Adopt saved cards’, then draft release notes.”</span><small>full flow — read · write · artifact</small></button>
+              <button class="prompt" type="button" data-prompt="Compare L-1 and L-2 and tell me what changed."><span>“Compare L-1 and L-2 and tell me what changed.”</span><small>cross-check history</small></button>
+              <button class="prompt" type="button" data-prompt="Generate the strata diagram, then export the workspace as CSV."><span>“Generate the strata diagram, then export the workspace as CSV.”</span><small>artifacts &amp; exports</small></button>
+            </div>
+            <p class="mono dim" style="margin:12px 0 2px">Agent tool log — live</p>
+            <ul class="aglog" id="agxLog"><li><span>No agent calls yet — this fills the moment an agent uses your tools.</span></li></ul>
+          </div>
+        </div>
       </div>
 
       <div class="ws-grid">
@@ -862,7 +911,7 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
       </div>
     </div>
     <div class="ft-bottom mono">
-      <span>© 2025 Strata Systems · MIT · <b id="build">v1.4.0</b></span>
+      <span>© 2025 Strata Systems · MIT · <b id="build">v1.4.1</b></span>
       <span>Built for the WebMCP Challenge</span>
       <span>Local time <b id="clock">—:—:—</b></span>
       <a href="#top" class="tlink" style="border:0;padding:0">Back to top ↑</a>
@@ -918,8 +967,6 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
 
 <!-- ============================================================
      SCRIPT 1 of 2 — APP LOGIC (no external imports).
-     Deliberately separate from the 3D script: if the 3D scene
-     fails for any reason, routing/workspace/agent still work.
      ============================================================ -->
 <script type="module">
 const $  = (s, c=document) => c.querySelector(s);
@@ -1118,7 +1165,7 @@ function connectStream(id){
     const l = state.layers.find(x => x.id === d.id);
     if(l && (l.status !== d.status || l.reviewedBy !== d.reviewer)){
       l.status = d.status; l.reviewedBy = d.reviewer; l.note = d.note || '';
-      mirrorIfNew('human', 'layer.signed', `${d.id} → ${d.status} by ${d.reviewer}`);
+      mirrorIfNew(d.actor === 'agent' ? 'agent' : 'human', 'layer.signed', `${d.id} → ${d.status} by ${d.reviewer}`);
     }
   });
   es.onerror = ()=> setConn('reconnecting…');
@@ -1315,7 +1362,7 @@ async function doAddLayer(title, kind, summary, actor){
   if(state.mode === 'server' && state.ws){
     const l = await apiAdd(state.ws.id, title, kind, summary, actor);
     if(!state.layers.some(x => x.id === l.id)) state.layers.push(l);
-    afterMutation(actor, 'layer.added', `${l.id} · ${l.title}`);
+    mirrorIfNew(actor, 'layer.added', `${l.id} · ${l.title}`);
     return l;
   }
   if(!localStore.data) localStore.seedDemo();
@@ -1333,7 +1380,7 @@ async function doSignOff(layerId, reviewer, verdict, note, actor){
     const d = await apiSign(state.ws.id, layerId, reviewer, verdict, note, actor);
     const l = state.layers.find(x => x.id === d.id);
     if(l){ l.status = d.status; l.reviewedBy = d.reviewer; l.note = d.note || ''; }
-    afterMutation(actor, 'layer.signed', `${d.id} → ${d.status} by ${d.reviewer}`);
+    mirrorIfNew(actor, 'layer.signed', `${d.id} → ${d.status} by ${d.reviewer}`);
     return d;
   }
   const l = state.layers.find(x => x.id === layerId);
@@ -1678,7 +1725,7 @@ if(fine && !reduced){
 /* ================= onboarding ================= */
 const OB_KEY = 'strata-onboarded';
 const obState = { ws:false, layer:false, sign:false, export:false, agent:false };
-function obDone(){ try{ return localStorage.getItem(OB_KEY) === '1'; }catch{ return false; } }
+function obDone(){ try{ return localStorage.getItem(OB_KEY) === '1'; }catch(e){ return false; } }
 function obRender(){
   $$('#obxList li').forEach(li => li.classList.toggle('done', !!obState[li.dataset.ob]));
 }
@@ -1804,6 +1851,43 @@ function sidebarToggle(open){
   location.reload();
 });
 try{ $('#sbVer').textContent = $('#build').textContent; }catch(e){}
+
+/* ================= AGENT CONSOLE (status · prompts · live tool log) ================= */
+state.toolLog = [];
+function renderAgentLog(){
+  const ul = $('#agxLog');
+  if(!ul) return;
+  if(!state.toolLog.length){
+    ul.innerHTML = '<li><span>No agent calls yet — this fills the moment an agent uses your tools.</span></li>';
+    return;
+  }
+  ul.innerHTML = state.toolLog.slice(0, 30).map(e => `
+    <li><b>${String(e.tool).replace(/</g,'&lt;')}</b><span>${String(e.result).replace(/</g,'&lt;')}</span><span class="t">${e.time}</span></li>`).join('');
+}
+function logTool(name, result){
+  let summary = 'ok';
+  if(result && result.error) summary = 'error — ' + result.error;
+  else if(result && result.added) summary = 'added ' + result.added;
+  else if(result && result.signed) summary = 'signed ' + result.signed + ' → ' + result.status;
+  else if(result && result.count != null) summary = result.count + ' layers returned';
+  else if(result && result.markdown) summary = 'release notes drafted';
+  else if(result && result.opened) summary = 'diagram opened';
+  else if(result && result.downloaded) summary = 'downloaded ' + result.downloaded;
+  else if(result && result.entries) summary = result.entries.length + ' entries returned';
+  else if(typeof result === 'string') summary = result;
+  state.toolLog.unshift({ tool: name, result: summary, time: new Date().toLocaleTimeString('en-GB',{hour12:false}) });
+  renderAgentLog();
+}
+ $('#agxCopyUrl')?.addEventListener('click', ()=>{
+  navigator.clipboard?.writeText(location.href)
+    .then(()=> toast('<b>URL copied.</b> Paste it into ChatGPT and ask it to open the page.'))
+    .catch(()=> toast('<b>Copy failed</b> — copy the address bar manually.'));
+});
+ $$('.prompt').forEach(b => b.addEventListener('click', ()=>{
+  navigator.clipboard?.writeText(b.dataset.prompt || '')
+    .then(()=> toast('<b>Prompt copied.</b> Paste it into your agent\'s chat.'))
+    .catch(()=> toast('<b>Copy failed</b> — copy the prompt text manually.'));
+}));
 
 /* ================================================================
    WEBMCP INTEGRATION — required surface: document.modelContext.registerTool
@@ -1936,38 +2020,43 @@ const mcpTools = [
 
 (function initWebMCP(){
   const pill = $('#mcpPill');
+  const status = $('#agxStatus');
   const mc = (document.modelContext && typeof document.modelContext.registerTool === 'function')
     ? document.modelContext
     : (navigator.modelContext && typeof navigator.modelContext.registerTool === 'function') ? navigator.modelContext : null;
   if(!mc){
-    if(pill){ pill.textContent = 'WebMCP · not detected'; }
+    if(pill){ pill.textContent = 'WebMCP · not this browser'; }
+    if(status){ status.innerHTML = '<b>This browser has no agent bridge.</b> Use ChatGPT’s in-app browser or flagged Chrome — steps on the left.'; }
     console.info('[Strata] WebMCP bridge not detected. Open in ChatGPT’s in-app browser, or Chrome 149+ with chrome://flags/#enable-webmcp-testing. The page works normally without it.');
     return;
   }
   let ok = 0;
   for(const t of mcpTools){
     try{
-      if(mc === document.modelContext) document.modelContext.registerTool(t); // required surface, verbatim
-      else mc.registerTool(t);
+      const wrapped = { ...t, execute: async (input) => {
+        const r = await t.execute(input);
+        try{ logTool(t.name, r); }catch(e){}
+        return r;
+      }};
+      if(mc === document.modelContext) document.modelContext.registerTool(wrapped); // required surface, verbatim
+      else mc.registerTool(wrapped);
       ok++;
     }
     catch(err){ console.warn('[WebMCP] registration failed:', t.name, err); }
   }
   const update = ()=>{ pill.textContent = `WebMCP · ${ok} tools live · ${state.mode}`; pill.classList.add('on'); };
   update();
+  if(status){ status.innerHTML = `<b class="ok">Agent connected — ${ok} tools live.</b> Talk to your agent in its chat; every call lands in the log.`; }
   document.addEventListener('strata:changed', update);
   addEventListener('strata:mode', update);
   console.info(`[Strata] ${ok}/${mcpTools.length} WebMCP tools registered. Inspect via Chrome DevTools (WebMCP tool debugging).`);
-  toast(`<b>WebMCP active.</b> ${ok} agent tools registered on this page.`);
+  toast(`<b>WebMCP active.</b> ${ok} agent tools registered — see the Agent console.`);
 })();
 </script>
 
 <!-- ============================================================
      SCRIPT 2 of 2 — THE 3D SYSTEM STACK (landing hero only).
-     Fully self-contained: 10 illustrated layers + foundation.
-     Click the stack → staggered dismantle + labels + zoom.
-     Click again → reassemble. Drag to spin/tilt. If this script
-     fails, Script 1 (the app) is unaffected.
+     Self-contained; if it fails, Script 1 (the app) is unaffected.
      ============================================================ -->
 <script type="importmap">
 { "imports": {
@@ -2010,7 +2099,6 @@ if(wrap){
   floor.rotation.x = -Math.PI/2; floor.position.y = -3.2;
   floor.receiveShadow = true; scene.add(floor);
 
-  /* materials: 0 prototype · 1 spec · 2 decision · 3 release · 4 foundation */
   const mats = [0,1,2,3,4].map(()=> new THREE.MeshStandardMaterial({roughness:.55, metalness:.06}));
   const THEME_3D = {
     atelier:    ['#8A7F6C', '#DCD2BF', '#BC4B1F', '#241E17', '#3A322A'],
@@ -2045,7 +2133,6 @@ if(wrap){
 
   const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const V = new THREE.Vector3();
-  const labels = [];
   const labelEls = [];
   function placeLabel(el, obj){
     obj.getWorldPosition(V); V.project(camera);
@@ -2063,7 +2150,7 @@ if(wrap){
     el.className = 'slab-label';
     el.innerHTML = `<b>${esc(L.id)}</b> ${esc(L.kind)} — ${esc(L.title)}`;
     labelsBox.appendChild(el);
-    labels.push(el); labelEls.push(el);
+    labelEls.push(el);
     return m;
   });
   const foundation = new THREE.Mesh(BASE_GEO, mats[4]);
@@ -2074,7 +2161,6 @@ if(wrap){
   foundLabel.innerHTML = '<b>DB</b> append-only ledger — the foundation';
   labelsBox.appendChild(foundLabel);
 
-  /* home (stacked) + scattered (exploded) poses */
   const HOME = slabs.map((s, i) => {
     const off = i - (N - 1) / 2;
     return { x:(i % 2 ? 1 : -1) * .08, y: off * .62, z: 0, ry: off * .14 };
@@ -2099,7 +2185,6 @@ if(wrap){
     exT0 = clock.elapsedTime;
   }
 
-  /* tap = toggle · drag = rotate (tap = tiny movement, short press) */
   let dragging = false, lastX = 0, lastY = 0, spinVel = 0;
   let spinAngle = -.4, tiltAngle = 0;
   let downX = 0, downY = 0, downT = 0, moved = false;
