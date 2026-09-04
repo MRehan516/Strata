@@ -531,7 +531,7 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
     <div class="sb-sec sb-about">
       <h4 class="mono">About</h4>
       <p><b>Strata</b> — a versioned decision ledger. Every spec, decision and release is an append-only layer, signed by a named human, and operable by your AI agent over WebMCP.</p>
-      <p>Built for the WebMCP Challenge · <span id="sbVer">v1.4.2</span> · MIT license.</p>
+      <p>Built for the WebMCP Challenge · <span id="sbVer">v1.4.3</span> · MIT license.</p>
       <p><a href="https://github.com/webmachinelearning/webmcp" target="_blank" rel="noopener">WebMCP specification ↗</a></p>
       <p class="sb-note">No user accounts — privacy is per-workspace: optional passwords, unlock keys stored only in this browser. Server workspaces are shared by link.</p>
     </div>
@@ -549,7 +549,7 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
       <h1 class="rv" style="transition-delay:.08s">Everything built<br>is built in <em>layers.</em></h1>
       <p class="hero-sub rv" style="transition-delay:.16s">Strata keeps every spec, decision and prototype as an addressable layer on one shared ledger — stored on a server, synced live across every open window, and exposed to your AI agent over WebMCP. You and your agent work the same truth. Nothing gets overwritten, nothing gets guessed.</p>
       <div class="hero-actions rv" style="transition-delay:.24s">
-        <a class="btn" href="#" data-goto-app>Get started — create your workspace
+        <a class="btn" href="#" data-goto-app>Get started — open your workspace
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
         <a class="tlink" href="#notes">Why layers
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
@@ -801,7 +801,7 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
           <li data-ob="layer"><span class="box">✓</span><span><b>Add your first layer</b> — a spec, decision, prototype or release, with the big form below-left.</span></li>
           <li data-ob="sign"><span class="box">✓</span><span><b>Sign one off</b> — type the reviewer’s name on a layer card and approve or reject it.</span></li>
           <li data-ob="export"><span class="box">✓</span><span><b>Export something</b> — a diagram, release notes, JSON or CSV.</span></li>
-          <li data-ob="agent"><span class="box">✓</span><span><b>Let your agent act</b> — open the <b>Agent console</b> above, copy the URL into ChatGPT (or use flagged Chrome), paste a ready-made prompt, and watch the tool log fill. The agent can’t run inside this tab — it lives in the agent’s own chat.</span></li>
+          <li data-ob="agent"><span class="box">✓</span><span><b>Let your agent act</b> — open the <b>Agent console</b> above, hit “Open in ChatGPT”, paste a ready-made prompt, and watch the tool log fill. The agent can’t run inside this tab — it lives in the agent’s own browser.</span></li>
         </ol>
       </div>
 
@@ -830,15 +830,15 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
             <p><b>The agent is not inside this page — it lives in your agent's browser.</b> Strata publishes 10 tools (add layers, record sign-offs, diff versions, draft releases, export…). An agent that speaks WebMCP calls them on the same ledger you're editing — and every call is logged live, on the right.</p>
             <p class="mono dim" style="margin-bottom:6px">Where the agent lives — 3 steps</p>
             <ol>
-              <li>Copy this page's URL (button below).</li>
-              <li><b>ChatGPT:</b> paste the URL into ChatGPT and ask it to open the page — its in-app browser supports WebMCP out of the box. &nbsp;<b>Or Chrome 149+:</b> enable <span class="mono">chrome://flags/#enable-webmcp-testing</span>, relaunch, reopen this page.</li>
-              <li>Paste a prompt from the right — then watch the Activity feed and the tool log react in real time.</li>
+              <li>Use an <b>open</b> workspace — the demo <span class="mono">DEMO01</span>, or one created without a password. Locked workspaces refuse the agent by design.</li>
+              <li><b>ChatGPT:</b> hit “Open in ChatGPT” below and send the prefilled prompt — tell it to open the page in its <b>in-app browser</b>, not to web-search it. &nbsp;<b>Or Chrome 149+:</b> enable <span class="mono">chrome://flags/#enable-webmcp-testing</span>, relaunch, open this page.</li>
+              <li>Watch the Activity feed and the tool log react in real time.</li>
             </ol>
             <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:6px">
               <button class="btn" id="agxOpenChatGPT" type="button" style="padding:12px 22px;font-size:14px">Open in ChatGPT ↗</button>
               <button class="tlink" id="agxCopyUrl" type="button">or copy this page's URL</button>
             </div>
-            <p class="sb-note" style="margin-top:8px">The button opens chatgpt.com with the prompt prefilled — send it and ChatGPT will open this page in its in-app browser. Requires a ChatGPT login.</p>
+            <p class="sb-note" style="margin-top:8px">The button opens chatgpt.com with the prompt prefilled — send it there. If ChatGPT replies with a web-search summary instead of operating the page, reply: <b>“Use your browser tool to open the page.”</b> Requires a ChatGPT login.</p>
           </div>
           <div>
             <p class="mono dim" style="margin-bottom:6px">Ready-made prompts — click to copy, then paste into the agent's chat</p>
@@ -915,7 +915,7 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
       </div>
     </div>
     <div class="ft-bottom mono">
-      <span>© 2025 Strata Systems · MIT · <b id="build">v1.4.2</b></span>
+      <span>© 2025 Strata Systems · MIT · <b id="build">v1.4.3</b></span>
       <span>Built for the WebMCP Challenge</span>
       <span>Local time <b id="clock">—:—:—</b></span>
       <a href="#top" class="tlink" style="border:0;padding:0">Back to top ↑</a>
@@ -1035,7 +1035,9 @@ const localStore = {
   resetDemo(){ this.seedDemo(); }
 };
 
-/* ================= VIEW ROUTING (landing / app) ================= */
+/* ================= VIEW ROUTING (landing / app) =================
+   Root URL always shows the landing. Only /w/CODE links and #/app
+   refreshes open the app. "Get started" resumes the last workspace. */
 const viewLanding = $('#viewLanding'), viewApp = $('#viewApp');
 let appVisible = false;
 function showApp(openModal = true){
@@ -1050,11 +1052,11 @@ function showLanding(){
   viewApp.hidden = true; viewLanding.hidden = false;
   window.scrollTo(0, 0);
 }
-function goApp(){
+function goApp(openModal = true){
   if(!location.hash.startsWith('#/app')){
     try{ history.replaceState(null, '', location.pathname + location.search + '#/app'); }catch(e){}
   }
-  showApp();
+  showApp(openModal);
 }
 function goLanding(){
   if(location.hash.startsWith('#/app')){
@@ -1062,14 +1064,24 @@ function goLanding(){
   }
   showLanding();
 }
+function lastWsId(){
+  try{ return localStorage.getItem('strata-last-ws') || null; }catch(e){ return null; }
+}
+function lastHistId(){
+  try{ const h = JSON.parse(localStorage.getItem('strata-ws-history')) || []; return (h[0] && h[0].id) || null; }catch(e){ return null; }
+}
  $$('[data-goto-app]').forEach(el => el.addEventListener('click', e => {
-  e.preventDefault(); menuToggle(false); goApp();
+  e.preventDefault(); menuToggle(false);
+  const last = lastWsId() || lastHistId();
+  if(last && state.serverUp){ openServerWs(last); }
+  else if(last){ openLocalWs(last, 'Local workspace'); }
+  else{ goApp(); }
 }));
  $$('[data-goto-landing]').forEach(el => el.addEventListener('click', e => {
   e.preventDefault(); goLanding();
 }));
 addEventListener('hashchange', ()=>{
-  if(location.hash.startsWith('#/app') && !appVisible) showApp();
+  if(location.hash.startsWith('#/app') && !appVisible) showApp(false);
 });
 
 /* ================= events from mutations ================= */
@@ -1181,7 +1193,7 @@ function updateUrl(id){
   try{ history.replaceState(null, '', '/w/' + id + (appVisible ? '#/app' : '')); }catch(e){}
 }
 function openServerWs(id){
-  goApp();
+  goApp(false);
   apiLoad(id).then(d => {
     setState(d.ws, d.layers, d.activity, 'server');
     $('#wsModal').hidden = true;
@@ -1204,7 +1216,7 @@ function openServerWs(id){
   });
 }
 function openLocalWs(id, name){
-  goApp();
+  goApp(false);
   $('#wsModal').hidden = true;
   setState({id, name}, localStore.data.layers, localStore.data.activity, 'local');
   try{ localStorage.setItem('strata-last-ws', id); }catch(e){}
@@ -1272,7 +1284,9 @@ function openLocalWs(id, name){
     .catch(()=> toast('<b>Copy failed</b> — copy the address bar manually.'));
 });
 
-/* ================= boot ================= */
+/* ================= boot =================
+   Root URL → landing, always. Only a /w/CODE link (or a #/app
+   refresh) opens the app view, resuming silently. */
 function wsIdFromUrl(){
   const m = location.pathname.match(/\/w\/([A-Za-z0-9]{6})/);
   if(m) return m[1].toUpperCase();
@@ -1283,14 +1297,22 @@ function wsIdFromUrl(){
 (async function boot(){
   localStore.load();
   state.serverUp = await pingServer();
-  const lastSaved = (()=>{ try{ return localStorage.getItem('strata-last-ws'); }catch(e){ return null; } })();
-  const lastHist = (()=>{ try{ const h = JSON.parse(localStorage.getItem('strata-ws-history')) || []; return h[0] && h[0].id; }catch(e){ return null; } })();
-  const id = wsIdFromUrl() || lastSaved || lastHist;
-  const wantsApp = !!id || location.hash.startsWith('#/app');
-  if(wantsApp) showApp(!id);
-  if(id && state.serverUp){ openServerWs(id); }
-  else if(id && !state.serverUp){ openLocalWs(id, 'Local workspace'); toast('<b>Server unreachable</b> — running in local mode. Start it with <b>npm start</b>.'); }
-  else if(wantsApp){ setConn(state.serverUp ? 'server ready' : 'local mode', state.serverUp ? '' : 'warn'); }
+  const id = wsIdFromUrl();
+  const hashApp = location.hash.startsWith('#/app');
+  if(id){
+    showApp(false);
+    if(state.serverUp){ openServerWs(id); }
+    else{ openLocalWs(id, 'Local workspace'); toast('<b>Server unreachable</b> — running in local mode. Start it with <b>npm start</b>.'); }
+    return;
+  }
+  if(hashApp){
+    const last = lastWsId() || lastHistId();
+    showApp(false);
+    if(last && state.serverUp){ openServerWs(last); }
+    else if(last){ openLocalWs(last, 'Local workspace'); }
+    else{ $('#wsModal').hidden = false; setConn(state.serverUp ? 'server ready' : 'local mode', state.serverUp ? '' : 'warn'); }
+  }
+  /* otherwise: the landing stays visible — for new and returning users alike */
 })();
 
 /* ================= renders ================= */
@@ -1894,29 +1916,30 @@ function logTool(name, result){
   obMark('agent');
 }
 function buildPrompt(kind){
-  const url = location.href;
+  const wsUrl = state.ws ? (location.origin + '/w/' + state.ws.id) : location.href;
+  const open = `Use your browser tool — the in-app browser, NOT web search or link-fetch — to open this page: ${wsUrl}`;
   if(kind === 'diff'){
     const L = state.layers;
     if(L.length >= 2){
       const a = L[0], b = L[L.length - 1];
-      return `Open ${url} with your browser tools and compare ${a.id} ("${a.title}") with ${b.id} ("${b.title}") — tell me exactly what changed between them.`;
+      return `${open}. The page registers 10 WebMCP tools. Call list_layers, then compare ${a.id} ("${a.title}") with ${b.id} ("${b.title}") and tell me exactly what changed between them. If the page reports the workspace is locked, stop and tell me to unlock it.`;
     }
-    return `Open ${url} with your browser tools and list the layers. If there are fewer than two, say so — I'll add a second version for you to diff.`;
+    return `${open}. The page registers 10 WebMCP tools. Call list_layers; if there are fewer than two layers, say so and I'll add a second version for you to diff.`;
   }
   if(kind === 'export'){
-    return `Open ${url} with your browser tools, generate the strata diagram, then export the workspace as CSV.`;
+    return `${open}. The page registers 10 WebMCP tools. Call generate_diagram, then export_workspace with format "csv". If the page reports the workspace is locked, stop and tell me to unlock it.`;
   }
-  return `Open ${url} with your browser tools. Then: list the layers, add a decision layer called 'Adopt saved cards' with a one-line summary, then draft release notes from the approved layers.`;
+  return `${open}. The page registers 10 WebMCP tools. Then: call list_layers, add a decision layer titled 'Adopt saved cards' with a one-line summary, and draft release notes from the approved layers. If the page reports the workspace is locked, stop and tell me to unlock it.`;
 }
  $('#agxCopyUrl')?.addEventListener('click', ()=>{
   navigator.clipboard?.writeText(location.href)
-    .then(()=> toast('<b>URL copied.</b> Paste it into ChatGPT and ask it to open the page.'))
+    .then(()=> toast('<b>URL copied.</b> Paste it into ChatGPT and tell it to open the page in its browser.'))
     .catch(()=> toast('<b>Copy failed</b> — copy the address bar manually.'));
 });
  $('#agxOpenChatGPT')?.addEventListener('click', ()=>{
   const q = buildPrompt('full');
   window.open('https://chatgpt.com/?q=' + encodeURIComponent(q), '_blank', 'noopener');
-  toast('<b>ChatGPT opened</b> with the prompt prefilled — send it, and it opens this page in its in-app browser.');
+  toast('<b>ChatGPT opened</b> with the prompt prefilled — send it. If it only web-searches, reply: “Use your browser tool to open the page.”');
 });
  $$('.prompt').forEach(b => b.addEventListener('click', ()=>{
   navigator.clipboard?.writeText(buildPrompt(b.dataset.pkind || 'full'))
