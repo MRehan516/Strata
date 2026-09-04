@@ -531,7 +531,7 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
     <div class="sb-sec sb-about">
       <h4 class="mono">About</h4>
       <p><b>Strata</b> — a versioned decision ledger. Every spec, decision and release is an append-only layer, signed by a named human, and operable by your AI agent over WebMCP.</p>
-      <p>Built for the WebMCP Challenge · <span id="sbVer">v1.4.3</span> · MIT license.</p>
+      <p>Built for the WebMCP Challenge · <span id="sbVer">v1.4.4</span> · MIT license.</p>
       <p><a href="https://github.com/webmachinelearning/webmcp" target="_blank" rel="noopener">WebMCP specification ↗</a></p>
       <p class="sb-note">No user accounts — privacy is per-workspace: optional passwords, unlock keys stored only in this browser. Server workspaces are shared by link.</p>
     </div>
@@ -797,11 +797,11 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
           <button class="reset" id="obxSkip" type="button">skip tour</button>
         </div>
         <ol id="obxList">
-          <li data-ob="ws"><span class="box">✓</span><span><b>Open a workspace</b> — create one (optionally password-locked) or join with a 6-character code.</span></li>
+          <li data-ob="ws"><span class="box">✓</span><span><b>Open a workspace</b> — create one, load test data, or join with a 6-character code.</span></li>
           <li data-ob="layer"><span class="box">✓</span><span><b>Add your first layer</b> — a spec, decision, prototype or release, with the big form below-left.</span></li>
           <li data-ob="sign"><span class="box">✓</span><span><b>Sign one off</b> — type the reviewer’s name on a layer card and approve or reject it.</span></li>
           <li data-ob="export"><span class="box">✓</span><span><b>Export something</b> — a diagram, release notes, JSON or CSV.</span></li>
-          <li data-ob="agent"><span class="box">✓</span><span><b>Let your agent act</b> — open the <b>Agent console</b> above, hit “Open in ChatGPT”, paste a ready-made prompt, and watch the tool log fill. The agent can’t run inside this tab — it lives in the agent’s own browser.</span></li>
+          <li data-ob="agent"><span class="box">✓</span><span><b>Let your agent act</b> — open the <b>Agent console</b> above, hit “Open in ChatGPT”, and watch the tool log fill. The agent can’t run inside this tab — it lives in the agent’s own browser.</span></li>
         </ol>
       </div>
 
@@ -819,7 +819,7 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
         <button class="mono reset" id="switchWs" type="button">switch workspace</button>
       </div>
 
-      <!-- AGENT CONSOLE — where the agent lives, what it can do, live log of its calls -->
+      <!-- AGENT CONSOLE -->
       <div class="agx" id="agentConsole">
         <div class="agx-head">
           <h4 class="mono" style="margin:0">🤖 Agent console — your AI co-operator</h4>
@@ -830,15 +830,15 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
             <p><b>The agent is not inside this page — it lives in your agent's browser.</b> Strata publishes 10 tools (add layers, record sign-offs, diff versions, draft releases, export…). An agent that speaks WebMCP calls them on the same ledger you're editing — and every call is logged live, on the right.</p>
             <p class="mono dim" style="margin-bottom:6px">Where the agent lives — 3 steps</p>
             <ol>
-              <li>Use an <b>open</b> workspace — the demo <span class="mono">DEMO01</span>, or one created without a password. Locked workspaces refuse the agent by design.</li>
-              <li><b>ChatGPT:</b> hit “Open in ChatGPT” below and send the prefilled prompt — tell it to open the page in its <b>in-app browser</b>, not to web-search it. &nbsp;<b>Or Chrome 149+:</b> enable <span class="mono">chrome://flags/#enable-webmcp-testing</span>, relaunch, open this page.</li>
+              <li>Use an <b>open</b> workspace — the demo <span class="mono">DEMO01</span>, one created without a password, or hit <b>Load test data</b> below.</li>
+              <li><b>ChatGPT:</b> hit “Open in ChatGPT” and send the prefilled prompt — it must open the page in its <b>in-app browser</b>, not web-search it. &nbsp;<b>Or Chrome 149+:</b> enable <span class="mono">chrome://flags/#enable-webmcp-testing</span>, relaunch, open this page.</li>
               <li>Watch the Activity feed and the tool log react in real time.</li>
             </ol>
             <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:6px">
               <button class="btn" id="agxOpenChatGPT" type="button" style="padding:12px 22px;font-size:14px">Open in ChatGPT ↗</button>
               <button class="tlink" id="agxCopyUrl" type="button">or copy this page's URL</button>
             </div>
-            <p class="sb-note" style="margin-top:8px">The button opens chatgpt.com with the prompt prefilled — send it there. If ChatGPT replies with a web-search summary instead of operating the page, reply: <b>“Use your browser tool to open the page.”</b> Requires a ChatGPT login.</p>
+            <p class="sb-note" style="margin-top:8px">The prompt tells ChatGPT to use its browser tool on an open workspace. If it replies with a web-search summary instead, reply: <b>“Use your browser tool to open the page.”</b> Requires a ChatGPT login.</p>
           </div>
           <div>
             <p class="mono dim" style="margin-bottom:6px">Ready-made prompts — click to copy, then paste into the agent's chat</p>
@@ -915,7 +915,7 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
       </div>
     </div>
     <div class="ft-bottom mono">
-      <span>© 2025 Strata Systems · MIT · <b id="build">v1.4.3</b></span>
+      <span>© 2025 Strata Systems · MIT · <b id="build">v1.4.4</b></span>
       <span>Built for the WebMCP Challenge</span>
       <span>Local time <b id="clock">—:—:—</b></span>
       <a href="#top" class="tlink" style="border:0;padding:0">Back to top ↑</a>
@@ -1035,9 +1035,9 @@ const localStore = {
   resetDemo(){ this.seedDemo(); }
 };
 
-/* ================= VIEW ROUTING (landing / app) =================
-   Root URL always shows the landing. Only /w/CODE links and #/app
-   refreshes open the app. "Get started" resumes the last workspace. */
+/* ================= VIEW ROUTING =================
+   Root URL → landing (always). /w/CODE → straight into that
+   workspace (agents & shared links). #/app refresh → resume. */
 const viewLanding = $('#viewLanding'), viewApp = $('#viewApp');
 let appVisible = false;
 function showApp(openModal = true){
@@ -1284,9 +1284,7 @@ function openLocalWs(id, name){
     .catch(()=> toast('<b>Copy failed</b> — copy the address bar manually.'));
 });
 
-/* ================= boot =================
-   Root URL → landing, always. Only a /w/CODE link (or a #/app
-   refresh) opens the app view, resuming silently. */
+/* ================= boot ================= */
 function wsIdFromUrl(){
   const m = location.pathname.match(/\/w\/([A-Za-z0-9]{6})/);
   if(m) return m[1].toUpperCase();
@@ -1312,7 +1310,7 @@ function wsIdFromUrl(){
     else if(last){ openLocalWs(last, 'Local workspace'); }
     else{ $('#wsModal').hidden = false; setConn(state.serverUp ? 'server ready' : 'local mode', state.serverUp ? '' : 'warn'); }
   }
-  /* otherwise: the landing stays visible — for new and returning users alike */
+  /* otherwise the landing stays visible — new and returning users alike */
 })();
 
 /* ================= renders ================= */
@@ -1337,9 +1335,10 @@ function renderLayers(){
     box.innerHTML = `<div class="empty">
       <p class="mono">0 layers — an empty ledger</p>
       <h4>Every project starts as layer one.</h4>
-      <p>Add your first spec, decision or prototype with the form on the left — or simply tell your agent what happened and watch it land here.</p>
-      <p class="mono">Try: “add a decision layer ‘we chose Postgres over Mongo’”</p>
+      <p>Add your first spec, decision or prototype with the form on the left — or load a realistic sample below and explore instantly.</p>
+      <button class="tlink" id="seedRealBtn" type="button">⚡ Load test data — 6 realistic layers</button>
     </div>`;
+    $('#seedRealBtn')?.addEventListener('click', seedRealisticData);
     return;
   }
   box.innerHTML = state.layers.map(l => `
@@ -1386,6 +1385,55 @@ const findLayer = (ref) => {
   if(n){ const byN = state.layers.find(l => l.id === 'L-'+n); if(byN) return byN; }
   return state.layers.find(l => l.title.toLowerCase() === s.toLowerCase()) || null;
 };
+
+/* ================= realistic test data (server-backed; falls back to local) ================= */
+async function seedRealisticData(){
+  if(state.ws && state.mode === 'server'){
+    const rows = [
+      ['spec',      'Checkout spec v1 — three-step flow', 'Baseline: cart → address → payment, no guest mode.'],
+      ['decision',  'Adopt saved cards for repeat buyers', 'Saved cards become the canonical payment method; full card entry only on first purchase.'],
+      ['prototype', 'One-page checkout prototype', 'Single-screen variant built for usability round 2; tested with 8 participants.'],
+      ['spec',      'Checkout spec v2 — guest flow', 'Adds guest checkout; removes the forced account-creation step.'],
+      ['decision',  'Move coupons to payment step', 'Coupon field removed from cart to declutter entry; measured impact at next A/B.'],
+      ['release',   'Release 0.1 — internal dogfood', 'First internal build; support team only, feedback via shared ledger.']
+    ];
+    try{
+      let last = null;
+      for(const [kind, title, summary] of rows){
+        last = await apiAdd(state.ws.id, title, kind, summary, 'human');
+        await new Promise(r => setTimeout(r, 120));
+      }
+      await apiSign(state.ws.id, last.id, 'Rehan', 'approved', 'Dogfood build accepted.', 'human');
+      toast('<b>Test data loaded.</b> 6 realistic layers added to the server ledger.');
+      obMark('layer');
+      return;
+    }catch(err){
+      toast('<b>Server refused seeding:</b> ' + escXml(err.message) + ' — falling back to local data.');
+    }
+  }
+  /* local fallback: build the same dataset in the browser */
+  if(!localStore.data || !localStore.data.layers) localStore.seedDemo();
+  const D = 864e5;
+  const now = Date.now();
+  localStore.data.layers = [
+    {id:'L-1',kind:'spec',      title:'Checkout spec v1 — three-step flow', summary:'Baseline: cart → address → payment, no guest mode.', author:'You', status:'open',    note:'', reviewedBy:null, createdAt:now-6*D},
+    {id:'L-2',kind:'decision',  title:'Adopt saved cards for repeat buyers', summary:'Saved cards become the canonical payment method.', author:'You', status:'approved',note:'Ship with v2.', reviewedBy:'Rehan', createdAt:now-5*D},
+    {id:'L-3',kind:'prototype', title:'One-page checkout prototype',         summary:'Single-screen variant; usability round 2, 8 participants.', author:'You', status:'open',    note:'', reviewedBy:null, createdAt:now-3*D},
+    {id:'L-4',kind:'spec',      title:'Checkout spec v2 — guest flow',       summary:'Adds guest checkout; removes forced account step.', author:'You', status:'open',    note:'', reviewedBy:null, createdAt:now-2*D},
+    {id:'L-5',kind:'decision',  title:'Move coupons to payment step',        summary:'Coupon field removed from cart to declutter entry.', author:'You', status:'rejected',note:'Revisit after A/B.', reviewedBy:'Sam', createdAt:now-1*D},
+    {id:'L-6',kind:'release',   title:'Release 0.1 — internal dogfood',      summary:'First internal build; support team only.', author:'You', status:'approved',note:'Dogfood build accepted.', reviewedBy:'Rehan', createdAt:now-3600e3}
+  ];
+  localStore.data.seq = 7;
+  localStore.data.activity = [
+    {ts:now-3600e3, actor:'human', action:'layer.signed', detail:'L-6 → approved by Rehan'},
+    {ts:now-6*D,    actor:'human', action:'layer.added',  detail:'L-1 · Checkout spec v1 — three-step flow'}
+  ];
+  localStore.save();
+  state.layers = localStore.data.layers; state.activity = localStore.data.activity;
+  renderAll();
+  toast('<b>Test data loaded.</b> 6 realistic layers (local mode).');
+  obMark('layer');
+}
 
 /* ================= mutations ================= */
 async function doAddLayer(title, kind, summary, actor){
@@ -1888,7 +1936,7 @@ function sidebarToggle(open){
 });
 try{ $('#sbVer').textContent = $('#build').textContent; }catch(e){}
 
-/* ================= AGENT CONSOLE (status · prompts · live tool log) ================= */
+/* ================= AGENT CONSOLE ================= */
 state.toolLog = [];
 function renderAgentLog(){
   const ul = $('#agxLog');
@@ -1953,7 +2001,7 @@ function buildPrompt(kind){
    ================================================================ */
 const mcpTools = [
   { name:'list_layers',
-    description:'List every layer in the open workspace — id, title, kind (spec|decision|prototype|release), status, author, summary and sign-off info. Call this first to understand the current state.',
+    description:'List every layer in the open workspace — id, title, kind (spec|decision|prototype|release), status, author, summary and sign-off info. Call this first to understand the current state. If no workspace is open, tell the human to open one from this page (demo code: DEMO01).',
     inputSchema:{type:'object', properties:{}},
     execute: async () => ({workspace: state.ws?.id || null, mode: state.mode, count: state.layers.length,
       layers: state.layers.map(l => ({id:l.id, title:l.title, kind:l.kind, status:l.status,
@@ -1970,7 +2018,7 @@ const mcpTools = [
       title = String(title).trim();
       if(title.length < 3) return {error:'title must be at least 3 characters'};
       if(!KINDS.includes(kind)) return {error:`kind must be one of: ${KINDS.join(', ')}`};
-      if(!state.ws) return {error:'no workspace open — the human must open one first'};
+      if(!state.ws) return {error:'no workspace open — the human must open one first (demo code: DEMO01)'};
       try{ const l = await doAddLayer(title, kind, String(summary).trim(), 'agent');
         return {added:l.id, layer:{id:l.id, title:l.title, kind:l.kind, status:l.status}}; }
       catch(err){ return {error: err.message}; } } },
@@ -1999,8 +2047,8 @@ const mcpTools = [
       required:['a','b']},
     execute: async ({a, b}) => {
       const la = findLayer(a), lb = findLayer(b);
-      if(!la) return {error:`no layer found for "${a}"`};
-      if(!lb) return {error:`no layer found for "${b}"`};
+      if(!la) return {error:`no layer found for "${a}" — call list_layers first`};
+      if(!lb) return {error:`no layer found for "${b}" — call list_layers first`};
       if(la.id === lb.id) return {error:'pick two different layers'};
       const differences = diffLayers(la, lb);
       return {a:{id:la.id, title:la.title}, b:{id:lb.id, title:lb.title},
