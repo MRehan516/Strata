@@ -105,6 +105,7 @@ Design choices that matter for agents:
 
 ## Architecture
 
+```
 Browser (vanilla JS + Three.js)
   UI · 3D ledger · WebMCP tools · diagram / export
         │ REST                          ▲ SSE
@@ -112,6 +113,7 @@ Backend (Node + Express)
   workspaces · layers · sign-offs · activity · auth · exports
         │
 SQLite (WAL) — persists to disk (JSON fallback available)
+```
 
 - Real-time: Server-Sent Events broadcast every mutation
 - Persistence: SQLite with WAL; data survives restarts
@@ -145,12 +147,14 @@ The status pill in the Live Demo header shows registration state:
 
 ## Project Structure
 
+```
 ├── server.js            # Express API, SSE, auth, SQLite
 ├── public/
 │   └── index.html       # Full frontend + 3D + WebMCP registration
 ├── package.json
 ├── LICENSE              # MIT
 └── README.md
+```
 
 ## Honest Limitations
 
@@ -160,7 +164,5 @@ The status pill in the Live Demo header shows registration state:
 - Session tokens travel as query parameters for EventSource and downloads
 - Reasoning quality on top of the tools belongs to the agent model
 
-Built for the [WebMCP Challenge](https://webmcp.devpost.com/).
-- Made the whole README scannable and professional
 
-This version is ready to paste into the repository.
+Built for the [WebMCP Challenge](https://webmcp.devpost.com/).
