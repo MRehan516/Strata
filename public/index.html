@@ -2003,7 +2003,7 @@ const mcpTools = [
   { name:'list_layers',
     description:'List every layer in the open workspace — id, title, kind (spec|decision|prototype|release), status, author, summary and sign-off info. Call this first to understand the current state. If no workspace is open, tell the human to open one from this page (demo code: DEMO01).',
     inputSchema:{type:'object', properties:{}},
-    execute: async () => ({workspace: state.ws?.id || null, mode: state.mode, count: state.layers.length,
+    execute: async () => ({workspace: state.ws?.id || null, workspaceOpen: !!state.ws, mode: state.mode,       hint: state.ws ? null : 'no workspace open in this browser session — navigate to /w/DEMO01 (open demo) and retry',       count: state.layers.length,
       layers: state.layers.map(l => ({id:l.id, title:l.title, kind:l.kind, status:l.status,
         author:l.author, summary:l.summary, reviewedBy:l.reviewedBy || null, note:l.note || null}))}) },
 
