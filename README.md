@@ -164,5 +164,6 @@ The status pill in the Live Demo header shows registration state:
 - Session tokens travel as query parameters for EventSource and downloads
 - Reasoning quality on top of the tools belongs to the agent model
 
+Deployed at : https://strata-bu4t.onrender.com/
 
 Built for the [WebMCP Challenge](https://webmcp.devpost.com/).
