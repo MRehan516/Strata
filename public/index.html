@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="atelier">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strata — the versioned workspace your agent can actually use</title>
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="3.4" rx="1.4" fill="%23BC4B1F"/><rect x="7" y="10.2" width="13" height="3.4" rx="1.4" fill="%231C1814"/><rect x="4.8" y="16.4" width="10.5" height="3.4" rx="1.4" fill="%231C1814"/></svg>'>
+
+<script>try{var t=localStorage.getItem('strata-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Spline+Sans+Mono:wght@300..700&display=swap" rel="stylesheet">
+
+<style>
+:root{--ease:cubic-bezier(.19,1,.22,1);--header-h:72px}
+:root,[data-theme="atelier"]{color-scheme:light;
+  --bg:#F3EDE3;--bg-raised:#EAE2D3;--ink:#1C1814;--ink-soft:#6A6152;
+  --line:rgba(28,24,20,.16);--accent:#BC4B1F;--accent-ink:#F6F0E6;
+  --font-display:"Fraunces",Georgia,serif;--font-body:"Archivo","Helvetica Neue",sans-serif;
+  --font-mono:"Spline Sans Mono",ui-monospace,monospace;
+  --disp-weight:560;--disp-tracking:-0.022em}
+[data-theme="signal"]{color-scheme:dark;
+  --bg:#121412;--bg-raised:#1B1E1B;--ink:#ECE9E1;--ink-soft:#A3A196;
+  --line:rgba(236,233,225,.17);--accent:#FF5A1F;--accent-ink:#121412;
+  --font-display:"Bricolage Grotesque","Archivo",sans-serif;--font-body:"Instrument Sans","Archivo",sans-serif;
+  --font-mono:"Spline Sans Mono",ui-monospace,monospace;
+  --disp-weight:640;--disp-tracking:-0.03em}
+[data-theme="greenhouse"]{color-scheme:dark;
+  --bg:#15251C;--bg-raised:#1C2F24;--ink:#EFE9DA;--ink-soft:#9FB2A2;
+  --line:rgba(239,233,218,.17);--accent:#C9A227;--accent-ink:#15251C;
+  --font-display:"Archivo",sans-serif;--font-body:"Archivo",sans-serif;
+  --font-mono:"Spline Sans Mono",ui-monospace,monospace;
+  --disp-weight:760;--disp-tracking:-0.015em}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font:400 17px/1.65 var(--font-body);
+  -webkit-font-smoothing:antialiased;transition:background .45s,color .45s;overflow-x:hidden}
+::selection{background:var(--accent);color:var(--accent-ink)}
+img{display:block;max-width:100%}a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+section{scroll-margin-top:calc(var(--header-h) + 12px)}
+
+.grain{position:fixed;inset:0;z-index:120;pointer-events:none;opacity:.05;
+  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="140" height="140" filter="url(%23n)"/></svg>')}
+.cursor{position:fixed;top:0;left:0;z-index:300;width:10px;height:10px;border-radius:50%;background:#fff;
+  mix-blend-mode:difference;pointer-events:none;display:flex;align-items:center;justify-content:center;
+  transform:translate(-50%,-50%);transition:width .3s var(--ease),height .3s var(--ease);will-change:transform}
+.cursor.big{width:66px;height:66px}
+.cursor span{font:600 9px/1 var(--font-mono);letter-spacing:.14em;color:#000;opacity:0;transition:opacity .2s}
+.cursor.big span{opacity:1}
+@media (hover:none),(pointer:coarse){.cursor{display:none}}
+
+.mono{font:500 11px/1.5 var(--font-mono);letter-spacing:.16em;text-transform:uppercase}
+.mono.dim{color:var(--ink-soft)}
+.wrap{max-width:1280px;margin:0 auto;padding:0 clamp(20px,4vw,56px)}
+.rv{opacity:0;transform:translateY(26px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.rv.in{opacity:1;transform:none}
+
+header{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--header-h);display:flex;align-items:center;
+  border-bottom:1px solid transparent;transition:background .4s,border-color .4s,backdrop-filter .4s}
+header.scrolled{background:color-mix(in srgb,var(--bg) 84%,transparent);backdrop-filter:blur(10px);border-bottom-color:var(--line)}
+.hd-in{width:100%;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand svg{width:22px;height:22px;color:var(--accent)}
+.brand b{font:var(--disp-weight) 21px var(--font-display);letter-spacing:-.01em;font-variation-settings:"opsz" 40}
+nav.links{display:flex;gap:30px}
+nav.links a{text-decoration:none;position:relative;padding:4px 0}
+nav.links a::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:100%;background:var(--ink);
+  transform:scaleX(0);transform-origin:right;transition:transform .35s var(--ease)}
+nav.links a:hover::after{transform:scaleX(1);transform-origin:left}
+.hd-cta{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border:1px solid var(--ink);
+  border-radius:999px;padding:9px 18px;font:500 13.5px var(--font-body);transition:background .25s,color .25s}
+.hd-cta:hover{background:var(--ink);color:var(--bg)}
+.burger{display:none;width:42px;height:42px;align-items:center;justify-content:center}
+.burger svg{width:24px;height:24px}
+.menu{position:fixed;inset:0;z-index:150;background:var(--bg);display:flex;flex-direction:column;
+  padding:24px clamp(20px,5vw,40px);transform:translateY(-102%);transition:transform .55s var(--ease)}
+.menu.open{transform:none}
+.menu-top{display:flex;justify-content:space-between;align-items:center;height:var(--header-h)}
+.menu nav{margin:auto 0;display:flex;flex-direction:column;gap:6px}
+.menu nav a{text-decoration:none;font:var(--disp-weight) clamp(2.4rem,10vw,4rem)/1.12 var(--font-display);
+  font-variation-settings:"opsz" 100;letter-spacing:var(--disp-tracking);
+  display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line)}
+.menu nav a i{font:500 11px var(--font-mono);letter-spacing:.16em;color:var(--ink-soft);font-style:normal}
+.menu-foot{display:flex;justify-content:space-between;color:var(--ink-soft)}
+
+.hero{min-height:100svh;display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);align-items:center;
+  gap:clamp(24px,4vw,64px);max-width:1280px;margin:0 auto;
+  padding:calc(var(--header-h) + 24px) clamp(20px,4vw,56px) 48px}
+.eyebrow{display:flex;align-items:center;gap:12px;color:var(--ink-soft);margin-bottom:26px}
+.eyebrow::before{content:"";width:34px;height:1px;background:var(--accent)}
+h1{font:var(--disp-weight) clamp(2.9rem,7vw,6.3rem)/0.99 var(--font-display);
+  font-variation-settings:"opsz" 120;letter-spacing:var(--disp-tracking)}
+h1 em{font-style:italic;font-weight:480;color:var(--accent)}
+.hero-sub{max-width:52ch;margin-top:28px;color:var(--ink-soft);font-size:18px}
+.hero-actions{display:flex;align-items:center;gap:26px;margin-top:38px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:10px;text-decoration:none;background:var(--accent);
+  color:var(--accent-ink);border-radius:999px;padding:15px 26px;font:600 15px var(--font-body);
+  transition:transform .3s var(--ease),box-shadow .3s;cursor:pointer}
+.btn svg{width:16px;height:16px;transition:transform .3s var(--ease)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px -12px var(--accent)}
+.btn:hover svg{transform:translate(3px,-3px)}
+.tlink{text-decoration:none;display:inline-flex;align-items:center;gap:8px;font:500 15px var(--font-body);
+  border-bottom:1px solid var(--ink);padding-bottom:3px;cursor:pointer}
+.tlink svg{width:15px;height:15px;transition:transform .3s var(--ease)}
+.tlink:hover svg{transform:translate(3px,-3px)}
+.hero-stage{position:relative;height:min(76vh,700px);min-height:440px;user-select:none}
+.hero-stage canvas{position:absolute;inset:0;width:100%!important;height:100%!important;touch-action:pan-y}
+.stage-note{position:absolute;top:6px;right:0;display:flex;align-items:center;gap:8px;color:var(--ink-soft)}
+.stage-note svg{width:15px;height:15px}
+.hero-hint{position:absolute;bottom:-6px;left:0;display:flex;align-items:center;gap:10px;color:var(--ink-soft)}
+.hero-hint svg{width:15px;height:15px;animation:dip 2.2s ease-in-out infinite}
+@keyframes dip{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+
+.ticker{border-block:1px solid var(--line);overflow:hidden;padding:13px 0}
+.ticker-track{display:flex;width:max-content;animation:tick 32s linear infinite}
+.ticker:hover .ticker-track{animation-play-state:paused}
+.ticker-track>div{display:flex;align-items:center;gap:34px;padding-right:34px}
+.ticker-track .mono{white-space:nowrap}
+.ast{width:13px;height:13px;color:var(--accent);flex:none}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+.sec{padding:clamp(84px,11vw,150px) 0}
+.sec-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+  border-top:1px solid var(--ink);padding-top:16px;margin-bottom:clamp(40px,6vw,84px)}
+
+.pill{font:600 10.5px var(--font-mono);letter-spacing:.14em;text-transform:uppercase;
+  border:1px solid var(--line);border-radius:999px;padding:6px 14px;color:var(--ink-soft);white-space:nowrap}
+.pill.on{border-color:var(--accent);color:var(--accent)}
+.pill.on::before{content:"● ";color:var(--accent)}
+.pill.warn{border-color:var(--accent);color:var(--accent)}
+
+.notes-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(32px,5vw,80px)}
+.statement{font:var(--disp-weight) clamp(1.8rem,3.6vw,3rem)/1.18 var(--font-display);
+  font-variation-settings:"opsz" 90;letter-spacing:var(--disp-tracking);text-wrap:balance}
+.statement em{font-style:italic;font-weight:460;color:var(--accent)}
+.notes-copy p{margin-top:26px;color:var(--ink-soft);max-width:56ch}
+.figs{display:flex;flex-direction:column;gap:34px;padding-top:14px}
+.figs figure:nth-child(2){align-self:flex-end;width:82%}
+.figs img{width:100%;filter:grayscale(1) sepia(.14) contrast(1.04);transition:filter .5s}
+.figs figure:hover img{filter:none}
+.figs figcaption{margin-top:10px;color:var(--ink-soft)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;margin-top:clamp(64px,8vw,110px)}
+.stat{border-top:1px solid var(--line);padding-top:18px}
+.stat b{display:block;font:var(--disp-weight) clamp(2.2rem,4vw,3.4rem)/1 var(--font-display);
+  font-variation-settings:"opsz" 100;letter-spacing:var(--disp-tracking)}
+.stat span{display:block;margin-top:10px;color:var(--ink-soft)}
+
+.cap-list{border-top:1px solid var(--line)}
+.cap{border-bottom:1px solid var(--line)}
+.cap-head{width:100%;display:grid;grid-template-columns:64px 1fr auto 44px;align-items:center;gap:18px;
+  padding:26px 10px;text-align:left;transition:background .3s,color .3s}
+.cap-num{font:500 12px var(--font-mono);letter-spacing:.14em;color:var(--ink-soft)}
+.cap-title{font:var(--disp-weight) clamp(1.5rem,3vw,2.3rem)/1.1 var(--font-display);
+  font-variation-settings:"opsz" 80;letter-spacing:var(--disp-tracking)}
+.cap-tag{font:500 10.5px var(--font-mono);letter-spacing:.16em;color:var(--ink-soft);
+  border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+.cap-ico{width:34px;height:34px;border:1px solid var(--line);border-radius:50%;display:flex;
+  align-items:center;justify-content:center;justify-self:end;transition:transform .4s var(--ease)}
+.cap-ico svg{width:15px;height:15px}
+.cap.open .cap-ico{transform:rotate(45deg)}
+.cap-head:hover{background:var(--ink);color:var(--bg)}
+.cap-head:hover .cap-num,.cap-head:hover .cap-tag{color:inherit;border-color:transparent}
+.cap-body{max-height:0;overflow:hidden;transition:max-height .55s var(--ease)}
+.cap-body-in{padding:6px 10px 30px 92px;max-width:62ch}
+.cap-body-in p{color:var(--ink-soft)}
+.cap-preview{position:fixed;z-index:90;width:300px;pointer-events:none;opacity:0;transition:opacity .25s;will-change:transform}
+.cap-preview.show{opacity:1}
+.cap-preview img{width:100%;aspect-ratio:4/3;object-fit:cover;filter:grayscale(1) sepia(.14);border:1px solid var(--line)}
+.cap-preview figcaption{margin-top:8px;color:var(--bg);mix-blend-mode:difference;
+  font:500 10px var(--font-mono);letter-spacing:.14em;text-transform:uppercase}
+@media (hover:none){.cap-preview{display:none}}
+
+/* ---- workspace ---- */
+.tag.k-spec{background:#DCD2BF;color:#1C1814;border-color:transparent}
+.tag.k-decision{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.tag.k-prototype{background:#8A7F6C;color:#F6F0E6;border-color:transparent}
+.tag.k-release{background:var(--ink);color:var(--bg);border-color:transparent}
+.empty{background:var(--bg-raised);border:1px dashed var(--line);border-radius:14px;padding:34px 26px;text-align:center}
+.empty h4{font:var(--disp-weight) 22px/1.2 var(--font-display);letter-spacing:var(--disp-tracking);margin:10px 0 8px}
+.empty p{color:var(--ink-soft);max-width:44ch;margin:0 auto 6px}
+.ws-grid{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,5fr) minmax(0,3fr);gap:clamp(28px,3.5vw,56px)}
+.ws-bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--bg-raised);
+  border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin-bottom:28px}
+.ws-bar b{font:var(--disp-weight) 17px var(--font-display);letter-spacing:var(--disp-tracking)}
+.ws-bar .code{color:var(--accent);font-weight:600}
+.ws-bar .spacer{flex:1}
+.reset{color:var(--ink-soft);border-bottom:1px solid var(--line);padding-bottom:2px}
+.reset:hover{color:var(--accent);border-color:var(--accent)}
+.exportbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.exportbar .tlink{font-size:13.5px}
+.ws-form{display:flex;flex-direction:column;gap:12px;margin-top:30px}
+.ws-form input,.ws-form select,.sign input{background:var(--bg-raised);border:1px solid var(--line);
+  border-radius:10px;padding:12px 14px;font-size:15px;width:100%}
+.ws-form input::placeholder,.sign input::placeholder{color:var(--ink-soft)}
+.ws-form input:focus,.ws-form select:focus,.sign input:focus{outline:none;border-color:var(--accent)}
+.ws-row{display:flex;gap:10px}
+.ws-row select{flex:0 0 140px}
+.ws-note{margin-top:14px;color:var(--ink-soft);font-size:14px}
+.cmp{margin-top:36px;border-top:1px solid var(--line);padding-top:22px}
+.cmp h4{margin-bottom:12px}
+.cmp select{flex:1;background:var(--bg-raised);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px}
+.cmp-out{margin-top:14px;color:var(--ink-soft);font-size:12px;line-height:1.9;letter-spacing:.02em;text-transform:none}
+.cmp-out b{color:var(--accent);font-weight:600}
+.layers{display:flex;flex-direction:column;gap:14px}
+.layer{background:var(--bg-raised);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.l-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.l-id{color:var(--ink-soft)}
+.tag{border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:10px}
+.st{margin-left:auto;border-radius:999px;padding:3px 10px;font-size:10px}
+.st.open{border:1px solid var(--line);color:var(--ink-soft)}
+.st.approved{background:var(--accent);color:var(--accent-ink)}
+.st.rejected{border:1px solid var(--line);color:var(--ink-soft);text-decoration:line-through}
+.layer h4{font:var(--disp-weight) 19px/1.2 var(--font-display);letter-spacing:var(--disp-tracking)}
+.layer .l-sum{color:var(--ink-soft);font-size:14.5px;margin-top:6px}
+.l-meta{margin-top:10px;color:var(--ink-soft)}
+.l-agent{color:var(--accent)}
+.sign{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.sign input{flex:1 1 140px}
+.sign button{border:1px solid var(--ink);border-radius:999px;padding:8px 16px;font:600 13px var(--font-body);transition:background .2s,color .2s}
+.sign button:hover{background:var(--ink);color:var(--bg)}
+.signed{margin-top:10px;font-size:13.5px;color:var(--ink-soft);border-left:2px solid var(--accent);padding-left:10px}
+.feed-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.feed{list-style:none;display:flex;flex-direction:column;gap:0;max-height:520px;overflow:auto}
+.feed li{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px;line-height:1.5}
+.feed .dot{flex:none;width:7px;height:7px;border-radius:50%;margin-top:7px;background:var(--ink-soft)}
+.feed li.agent .dot{background:var(--accent)}
+.feed li.agent .who{color:var(--accent);font-weight:600}
+.feed .who{font-weight:600}
+.feed .when{margin-left:auto;color:var(--ink-soft);flex:none;font-size:11.5px}
+
+.method{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:clamp(32px,6vw,96px)}
+.method-left{position:sticky;top:calc(var(--header-h) + 32px);align-self:start}
+.method-left p{color:var(--ink-soft);margin-top:18px;max-width:34ch}
+.steps{display:flex;flex-direction:column}
+.step{display:grid;grid-template-columns:110px 1fr;gap:20px;padding:34px 0;border-bottom:1px solid var(--line)}
+.step:first-child{border-top:1px solid var(--line)}
+.step i{font:500 clamp(1.9rem,3vw,2.6rem)/1 var(--font-display);font-style:italic;
+  font-variation-settings:"opsz" 60;color:var(--accent)}
+.step h3{font:var(--disp-weight) clamp(1.35rem,2.2vw,1.7rem)/1.15 var(--font-display);
+  letter-spacing:var(--disp-tracking);font-variation-settings:"opsz" 60}
+.step p{margin-top:10px;color:var(--ink-soft);max-width:52ch}
+
+.quote{padding:clamp(84px,11vw,150px) 0;border-top:1px solid var(--line)}
+blockquote{font:480 clamp(1.7rem,3.6vw,3rem)/1.24 var(--font-display);font-style:italic;
+  font-variation-settings:"opsz" 110;letter-spacing:-.015em;max-width:26ch;text-wrap:balance}
+.quote-by{margin-top:30px;color:var(--ink-soft)}
+
+.access h2{font:var(--disp-weight) clamp(2.4rem,6vw,4.8rem)/1.02 var(--font-display);
+  font-variation-settings:"opsz" 120;letter-spacing:var(--disp-tracking)}
+.access .sub{margin-top:20px;color:var(--ink-soft);max-width:46ch}
+.form{margin-top:40px;display:flex;gap:12px;max-width:560px;flex-wrap:wrap}
+.form input{flex:1 1 260px;background:transparent;border:0;border-bottom:1px solid var(--ink);
+  padding:14px 2px;font-size:16px}
+.form input::placeholder{color:var(--ink-soft)}
+.form input:focus{outline:none;border-bottom-color:var(--accent)}
+.form-msg{margin-top:14px;font:500 13px var(--font-mono);letter-spacing:.06em;min-height:20px}
+.form-msg.err{color:var(--accent)}
+.fine{margin-top:26px;color:var(--ink-soft)}
+
+footer{border-top:1px solid var(--ink);padding:clamp(56px,7vw,90px) 0 34px}
+.ft-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
+.ft-brand p{color:var(--ink-soft);margin-top:16px;max-width:30ch;font-size:15px}
+.ft-col h4{margin-bottom:18px;color:var(--ink-soft)}
+.ft-col a{display:block;text-decoration:none;padding:5px 0;font-size:15px;width:fit-content;position:relative}
+.ft-col a::after{content:"";position:absolute;left:0;bottom:2px;height:1px;width:100%;background:var(--ink);
+  transform:scaleX(0);transform-origin:right;transition:transform .3s var(--ease)}
+.ft-col a:hover::after{transform:scaleX(1);transform-origin:left}
+.ft-bottom{margin-top:clamp(48px,6vw,72px);padding-top:22px;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;color:var(--ink-soft)}
+#clock{color:var(--ink)}
+
+.lab{position:fixed;left:18px;bottom:18px;z-index:140;display:flex;align-items:center;gap:10px;
+  background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);
+  border:1px solid var(--line);border-radius:999px;padding:8px 14px 8px 10px;
+  box-shadow:0 12px 30px -18px rgba(0,0,0,.45)}
+.lab span{font:600 9.5px var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+.lab button{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);transition:transform .25s var(--ease)}
+.lab button:hover{transform:scale(1.15)}
+.lab button.on{outline:2px solid var(--ink);outline-offset:2px}
+.lab i{width:14px;height:14px;border-radius:50%;font-style:normal}
+.lab .i-a{background:linear-gradient(90deg,#F3EDE3 50%,#BC4B1F 50%);border:1px solid #d8cfbe}
+.lab .i-b{background:linear-gradient(90deg,#121412 50%,#FF5A1F 50%);border:1px solid #333}
+.lab .i-c{background:linear-gradient(90deg,#15251C 50%,#C9A227 50%);border:1px solid #3a5445}
+
+.modal{position:fixed;inset:0;z-index:220;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;padding:20px}
+.modal[hidden]{display:none}
+.modal-in{background:var(--bg);border:1px solid var(--line);border-radius:16px;max-width:640px;width:100%;
+  max-height:84vh;display:flex;flex-direction:column;padding:24px;overflow:auto}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.modal pre{background:var(--bg-raised);border:1px solid var(--line);border-radius:10px;padding:16px;
+  overflow:auto;font:400 12.5px/1.7 var(--font-mono);white-space:pre-wrap;flex:1}
+.modal .btn{margin-top:16px;align-self:flex-start}
+.modal .tlink{margin-top:14px;align-self:flex-start}
+.diag-box{background:#F7F2E9;border:1px solid var(--line);border-radius:10px;padding:12px;overflow:auto;flex:1}
+.diag-box svg{display:block;min-width:640px}
+.ws-or{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--ink-soft)}
+.ws-or::before,.ws-or::after{content:"";flex:1;height:1px;background:var(--line)}
+.modal-in .btn,.modal-in .tlink{margin-top:0}
+.modal-in>*+*{margin-top:12px}
+.modal-in input{background:var(--bg-raised);border:1px solid var(--line);border-radius:10px;
+  padding:12px 14px;font-size:15px;width:100%}
+.modal-in input:focus{outline:none;border-color:var(--accent)}
+
+.toasts{position:fixed;right:20px;bottom:20px;z-index:200;display:flex;flex-direction:column;gap:10px}
+.toast{background:var(--ink);color:var(--bg);padding:14px 20px;border-radius:10px;font:500 13.5px var(--font-body);
+  max-width:320px;box-shadow:0 16px 40px -16px rgba(0,0,0,.5);transform:translateY(16px);opacity:0;
+  transition:all .45s var(--ease)}
+.toast.show{transform:none;opacity:1}
+.toast b{color:var(--accent);font-weight:600}
+
+@media (max-width:1000px){
+  .hero{grid-template-columns:1fr;padding-top:calc(var(--header-h) + 40px)}
+  .hero-stage{height:440px;min-height:0;order:2}
+  .notes-grid,.method,.ws-grid{grid-template-columns:1fr}
+  .method-left{position:static}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .ft-grid{grid-template-columns:1fr 1fr}
+  .feed{max-height:320px}
+}
+@media (max-width:880px){
+  nav.links,.hd-cta{display:none}
+  .burger{display:flex}
+  .cap-head{grid-template-columns:40px 1fr 40px}
+  .cap-tag{display:none}
+  .cap-body-in{padding-left:60px}
+}
+@media (max-width:560px){
+  .stats{grid-template-columns:1fr 1fr;gap:20px}
+  .step{grid-template-columns:64px 1fr}
+  .ft-grid{grid-template-columns:1fr}
+  .ws-row{flex-direction:column}
+  .ws-row select{flex:none}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .rv{transition:none;opacity:1;transform:none}
+  .ticker-track{animation:none}
+  .hero-hint svg{animation:none}
+}
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+<div class="cursor" id="cursor" aria-hidden="true"><span>DRAG</span></div>
+
+<header id="header">
+  <div class="wrap hd-in">
+    <a class="brand" href="#top" aria-label="Strata home">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="4" width="16" height="3.4" rx="1.4"/><rect x="7" y="10.2" width="13" height="3.4" rx="1.4"/><rect x="4.8" y="16.4" width="10.5" height="3.4" rx="1.4"/></svg>
+      <b>Strata</b>
+    </a>
+    <nav class="links mono" aria-label="Primary">
+      <a href="#notes">Field notes</a>
+      <a href="#capabilities">Capabilities</a>
+      <a href="#workspace">Live demo</a>
+      <a href="#process">Method</a>
+      <a href="#access">Access</a>
+    </nav>
+    <a class="hd-cta" href="#workspace">Try it with your agent</a>
+    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="menu" id="menu" aria-hidden="true">
+  <div class="menu-top">
+    <a class="brand" href="#top"><svg viewBox="0 0 24 24" fill="currentColor" style="width:22px;color:var(--accent)"><rect x="4" y="4" width="16" height="3.4" rx="1.4"/><rect x="7" y="10.2" width="13" height="3.4" rx="1.4"/><rect x="4.8" y="16.4" width="10.5" height="3.4" rx="1.4"/></svg><b>Strata</b></a>
+    <button class="burger" id="menuClose" aria-label="Close menu" style="display:flex">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <nav>
+    <a href="#notes">Field notes <i>01</i></a>
+    <a href="#capabilities">Capabilities <i>02</i></a>
+    <a href="#workspace">Live demo <i>03</i></a>
+    <a href="#process">Method <i>04</i></a>
+    <a href="#access">Access <i>05</i></a>
+  </nav>
+  <div class="menu-foot mono"><span>Strata Systems</span><span>Est. 2025</span></div>
+</div>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow mono rv">Strata — System 01 · WebMCP-enabled</p>
+      <h1 class="rv" style="transition-delay:.08s">Everything built<br>is built in <em>layers.</em></h1>
+      <p class="hero-sub rv" style="transition-delay:.16s">Strata keeps every spec, decision and prototype as an addressable layer on one shared ledger — stored on a server, synced live across every open window, and exposed to your AI agent over WebMCP. You and your agent work the same truth. Nothing gets overwritten, nothing gets guessed.</p>
+      <div class="hero-actions rv" style="transition-delay:.24s">
+        <a class="btn" href="#workspace">Run the live demo
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+        <a class="tlink" href="#notes">Why layers
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+      </div>
+    </div>
+    <div class="hero-stage rv" style="transition-delay:.2s" id="stage">
+      <p class="stage-note mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v4h-4"/></svg>Fig. 00 — the live ledger · hover to dismantle · drag to spin</p>
+      <p class="hero-hint mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>Scroll — the stack opens</p>
+    </div>
+  </section>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <div>
+        <span class="mono">Spec versioning</span><svg class="ast" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M4.5 7.5l15 9M19.5 7.5l-15 9"/></svg>
+        <span class="mono">Agent-ready via WebMCP</span><svg class="ast" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M4.5 7.5l15 9M19.5 7.5l-15 9"/></svg>
+        <span class="mono">Server-persisted</span><svg class="ast" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M4.5 7.5l15 9M19.5 7.5l-15 9"/></svg>
+        <span class="mono">Live multi-window sync</span><svg class="ast" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M4.5 7.5l15 9M19.5 7.5l-15 9"/></svg>
+        <span class="mono">Diagram &amp; CSV exports</span><svg class="ast" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M4.5 7.5l15 9M19.5 7.5l-15 9"/></svg>
+        <span class="mono">One ledger, two operators</span><svg class="ast" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M4.5 7.5l15 9M19.5 7.5l-15 9"/></svg>
+      </div>
+      <div aria-hidden="true">
+        <span class="mono">Spec versioning</span><svg class="ast" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M4.5 7.5l15 9M19.5 7.5l-15 9"/></svg>
+        <span class="mono">Agent-ready via WebMCP</span><svg class="ast" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M4.5 7.5l15 9M19.5 7.5l-15 9"/></svg>
+        <span class="mono">Server-persisted</span><svg class="ast" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M4.5 7.5l15 9M19.5 7.5l-15 9"/></svg>
+        <span class="mono">Live multi-window sync</span><svg class="ast" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M4.5 7.5l15 9M19.5 7.5l-15 9"/></svg>
+        <span class="mono">Diagram &amp; CSV exports</span><svg class="ast" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M4.5 7.5l15 9M19.5 7.5l-15 9"/></svg>
+        <span class="mono">One ledger, two operators</span><svg class="ast" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M4.5 7.5l15 9M19.5 7.5l-15 9"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- 01 · FIELD NOTES -->
+  <section class="sec" id="notes">
+    <div class="wrap">
+      <div class="sec-head rv"><span class="mono">01 — Field notes</span><span class="mono dim">Why layers</span></div>
+      <div class="notes-grid">
+        <div class="notes-copy">
+          <p class="statement rv">Most tools track deliverables. Strata tracks the <em>decisions</em> underneath them — the part that actually gets lost.</p>
+          <p class="rv" style="transition-delay:.1s">A project isn’t a folder; it’s a sequence of judgement calls. Specs get overwritten, prototypes fork into oblivion, and the reasoning behind “final_v3_REAL” dies the moment its author leaves the team. Strata never overwrites: every state of a project stays a layer you can return to, diff, and sign.</p>
+          <p class="rv" style="transition-delay:.18s">The ledger lives on a server, so it follows you across devices and updates live for everyone in the room. And because it’s exposed over WebMCP, your agent isn’t a chat sidebar guessing at your UI — it holds the same structured handle on project truth that you do.</p>
+        </div>
+        <div class="figs">
+          <figure class="rv">
+            <img src="https://picsum.photos/seed/strata-a/900/1100.jpg" alt="A workspace mid-review" loading="lazy">
+            <figcaption class="mono">Fig. 01 — A workspace mid-review</figcaption>
+          </figure>
+          <figure class="rv" style="transition-delay:.12s">
+            <img src="https://picsum.photos/seed/strata-b/900/640.jpg" alt="The ledger, fourteen days in" loading="lazy">
+            <figcaption class="mono">Fig. 02 — The ledger, 14 days in</figcaption>
+          </figure>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat rv"><b data-count="10">0</b><span>agent tools registered over WebMCP</span></div>
+        <div class="stat rv" style="transition-delay:.08s"><b data-count="0">0</b><span>API keys required to run</span></div>
+        <div class="stat rv" style="transition-delay:.16s"><b data-count="5">0</b><span>export formats — json, csv, md, svg, png</span></div>
+        <div class="stat rv" style="transition-delay:.24s"><b data-count="0">0</b><span>layers overwritten, ever</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 · CAPABILITIES -->
+  <section class="sec" id="capabilities">
+    <div class="wrap">
+      <div class="sec-head rv"><span class="mono">02 — Capabilities</span><span class="mono dim">Each one is an agent tool too</span></div>
+      <div class="cap-list rv" id="capList">
+        <div class="cap" data-img="https://picsum.photos/seed/strata-ledger/620/465.jpg">
+          <button class="cap-head" aria-expanded="false">
+            <span class="cap-num">01</span><span class="cap-title">Ledger</span>
+            <span class="cap-tag">Core · tools: list_layers, add_layer</span>
+            <span class="cap-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+          </button>
+          <div class="cap-body"><div class="cap-body-in">
+            <p>Every spec, decision and prototype is an append-only layer with an ID you can cite in a meeting — or hand to your agent. Stored server-side; survives closed tabs, other browsers, other devices.</p>
+          </div></div>
+        </div>
+        <div class="cap" data-img="https://picsum.photos/seed/strata-view/620/465.jpg">
+          <button class="cap-head" aria-expanded="false">
+            <span class="cap-num">02</span><span class="cap-title">Strata View</span>
+            <span class="cap-tag">View · tool: compare_layers</span>
+            <span class="cap-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+          </button>
+          <div class="cap-body"><div class="cap-body-in">
+            <p>Diff any two layers field by field — in the UI for you, as structured data for your agent. The generated diagram renders the whole strata as a downloadable figure.</p>
+          </div></div>
+        </div>
+        <div class="cap" data-img="https://picsum.photos/seed/strata-rooms/620/465.jpg">
+          <button class="cap-head" aria-expanded="false">
+            <span class="cap-num">03</span><span class="cap-title">Sign-off</span>
+            <span class="cap-tag">Governance · tool: sign_off</span>
+            <span class="cap-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+          </button>
+          <div class="cap-body"><div class="cap-body-in">
+            <p>Approvals are recorded against the exact layer they refer to — named, timestamped, validated on the server. Agents can prepare and record, but only on a named human’s instruction.</p>
+          </div></div>
+        </div>
+        <div class="cap" data-img="https://picsum.photos/seed/strata-handoff/620/465.jpg">
+          <button class="cap-head" aria-expanded="false">
+            <span class="cap-num">04</span><span class="cap-title">Handoff</span>
+            <span class="cap-tag">Ship · tool: draft_release_notes</span>
+            <span class="cap-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+          </button>
+          <div class="cap-body"><div class="cap-body-in">
+            <p>Bundle approved layers into release notes — exportable as Markdown. Your agent drafts from the ledger; you approve the cut. Export the whole workspace as JSON or CSV anytime.</p>
+          </div></div>
+        </div>
+      </div>
+    </div>
+    <figure class="cap-preview" id="capPreview" aria-hidden="true">
+      <img alt="" id="capPreviewImg"><figcaption id="capPreviewCap"></figcaption>
+    </figure>
+  </section>
+
+  <!-- 03 · LIVE DEMO -->
+  <section class="sec" id="workspace">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <span class="mono">03 — Live demo · one ledger, two operators</span>
+        <span class="pill" id="mcpPill">WebMCP · checking…</span>
+      </div>
+
+      <div class="ws-bar rv">
+        <span class="mono">WS <b class="code" id="wsCode">—</b></span>
+        <b id="wsName">No workspace open</b>
+        <span class="pill" id="connPill">connecting…</span>
+        <span class="spacer"></span>
+        <button class="mono reset" id="copyLink" type="button">copy link</button>
+        <button class="mono reset" id="switchWs" type="button">switch workspace</button>
+      </div>
+
+      <div class="ws-grid">
+        <div class="ws-left rv">
+          <p class="statement" style="font-size:clamp(1.4rem,2.4vw,2rem)">Work the UI. Or tell your agent what to do. <em>Same ledger.</em></p>
+          <form id="layerForm" class="ws-form">
+            <input id="lfTitle" placeholder="Layer title — e.g. “Checkout spec v3”" required>
+            <div class="ws-row">
+              <select id="lfKind" aria-label="Layer kind">
+                <option value="spec">Spec</option><option value="decision">Decision</option>
+                <option value="prototype">Prototype</option><option value="release">Release</option>
+              </select>
+              <input id="lfSummary" placeholder="What it captures (optional)">
+            </div>
+            <button class="btn" type="submit">Add layer</button>
+          </form>
+          <div class="exportbar" aria-label="Export options">
+            <button class="tlink" id="btnDiagram" type="button">Diagram (SVG/PNG)</button>
+            <button class="tlink" id="btnReleaseMd" type="button">Release notes (.md)</button>
+            <button class="tlink" id="btnJson" type="button">Export JSON</button>
+            <button class="tlink" id="btnCsv" type="button">Export CSV</button>
+          </div>
+          <div class="cmp">
+            <h4 class="mono">Compare two layers</h4>
+            <div class="ws-row">
+              <select id="cmpA" aria-label="First layer"></select>
+              <select id="cmpB" aria-label="Second layer"></select>
+            </div>
+            <button class="tlink" id="cmpGo" type="button" style="margin-top:12px">Run diff</button>
+            <div id="cmpOut" class="cmp-out mono" role="status"></div>
+          </div>
+          <p class="ws-note">Open this page in two windows — edits sync live. With WebMCP enabled (ChatGPT’s in-app browser, or Chrome with <span class="mono">chrome://flags/#enable-webmcp-testing</span>), an agent can do all of the above — try: <em>“List the layers, add a decision layer ‘Adopt saved cards’, then draft release notes.”</em></p>
+        </div>
+        <div class="ws-mid rv">
+          <div class="layers" id="layerList"></div>
+        </div>
+        <div class="ws-right rv">
+          <div class="feed-head"><h4 class="mono">Activity</h4><button class="mono reset" id="resetDemo" type="button">Reset demo</button></div>
+          <ul class="feed" id="feed"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 · METHOD -->
+  <section class="sec" id="process">
+    <div class="wrap method">
+      <div class="method-left">
+        <div class="sec-head rv" style="margin-bottom:0"><span class="mono">04 — Method</span></div>
+        <p class="rv" style="transition-delay:.1s;margin-top:24px">Four moves, repeated until the thing ships. Each one writes to the same ledger — for you, for your teammates in other windows, and for your agent.</p>
+      </div>
+      <div class="steps">
+        <div class="step rv"><i>i.</i><div><h3>Capture</h3><p>Record specs, decisions, prototypes. Each becomes a layer with provenance from minute zero — by hand, or narrated to your agent.</p></div></div>
+        <div class="step rv" style="transition-delay:.06s"><i>ii.</i><div><h3>Compose</h3><p>Assemble a stratum: the exact bundle of versions that constitutes this attempt at the truth. One handle, one state, no ambiguity.</p></div></div>
+        <div class="step rv" style="transition-delay:.12s"><i>iii.</i><div><h3>Critique</h3><p>Reviewers sign inside the layer they’re commenting on. Your agent can pre-check that a layer contradicts no earlier decision before a human ever looks.</p></div></div>
+        <div class="step rv" style="transition-delay:.18s"><i>iv.</i><div><h3>Cut</h3><p>When contested layers resolve, cut the release. The agent drafts the notes from the ledger; the ledger seals the record.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="quote">
+    <div class="wrap rv">
+      <blockquote>“List the layers, add a decision layer called ‘Adopt saved cards’, then draft release notes.”</blockquote>
+      <p class="quote-by mono">Paste this into ChatGPT while this page is open — then watch the activity feed.</p>
+    </div>
+  </section>
+
+  <!-- 05 · ACCESS -->
+  <section class="sec access" id="access">
+    <div class="wrap">
+      <div class="sec-head rv"><span class="mono">05 — Access</span><span class="mono dim">Early preview</span></div>
+      <h2 class="rv">Start your first stratum.</h2>
+      <p class="sub rv" style="transition-delay:.08s">Create a workspace above and share the link — everyone who opens it sees the same live ledger. Leave an address and we’ll send an invite to the preview.</p>
+      <form class="form rv" id="accessForm" style="transition-delay:.14s" novalidate>
+        <input type="email" id="accessEmail" placeholder="you@yourteam.com" autocomplete="email" aria-label="Work email">
+        <button class="btn" type="submit">Request invite
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></button>
+      </form>
+      <p class="form-msg mono" id="formMsg" role="status"></p>
+      <p class="fine mono">Free for teams up to five · No card · No countdown</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="ft-grid">
+      <div class="ft-brand">
+        <a class="brand" href="#top"><svg viewBox="0 0 24 24" fill="currentColor" style="width:22px;color:var(--accent)"><rect x="4" y="4" width="16" height="3.4" rx="1.4"/><rect x="7" y="10.2" width="13" height="3.4" rx="1.4"/><rect x="4.8" y="16.4" width="10.5" height="3.4" rx="1.4"/></svg><b>Strata</b></a>
+        <p>A versioned workspace where specs, decisions and releases live on one server-persisted ledger — open to humans and their agents through WebMCP.</p>
+      </div>
+      <div class="ft-col"><h4 class="mono">Index</h4>
+        <a href="#notes">Field notes</a><a href="#capabilities">Capabilities</a><a href="#workspace">Live demo</a><a href="#process">Method</a><a href="#access">Access</a>
+      </div>
+      <div class="ft-col"><h4 class="mono">Agent tools</h4>
+        <a href="#workspace">list_layers</a><a href="#workspace">add_layer</a><a href="#workspace">sign_off</a><a href="#workspace">compare_layers</a><a href="#workspace">draft_release_notes</a><a href="#workspace">generate_diagram</a><a href="#workspace">export_workspace</a><a href="#workspace">get_activity</a>
+      </div>
+      <div class="ft-col"><h4 class="mono">Elsewhere</h4>
+        <a href="#" data-dead>Source on GitHub (MIT)</a><a href="#" data-dead>Changelog</a><a href="#" data-dead>Spec — webmcp</a><a href="#" data-dead>Contact</a>
+      </div>
+    </div>
+    <div class="ft-bottom mono">
+      <span>© 2025 Strata Systems · MIT · <b id="build">v1.1.0</b></span>
+      <span>Built for the WebMCP Challenge</span>
+      <span>Local time <b id="clock">—:—:—</b></span>
+      <a href="#top" class="tlink" style="border:0;padding:0">Back to top ↑</a>
+    </div>
+  </div>
+</footer>
+
+<div class="lab" role="group" aria-label="Theme preview">
+  <span>Theme</span>
+  <button class="i-a" data-set="atelier" aria-label="Atelier theme"></button>
+  <button class="i-b" data-set="signal" aria-label="Signal theme"></button>
+  <button class="i-c" data-set="greenhouse" aria-label="Greenhouse theme"></button>
+</div>
+
+<!-- workspace welcome / switcher -->
+<div class="modal" id="wsModal" hidden>
+  <div class="modal-in" style="max-width:480px">
+    <div class="modal-head"><h4 class="mono">Open a workspace</h4><button class="reset" id="wsClose" type="button" aria-label="Close">✕</button></div>
+    <input id="wsNameIn" placeholder="New workspace name (e.g. Checkout Revamp)" maxlength="80">
+    <input id="wsPassIn" type="password" placeholder="Password (optional — locks this workspace)" maxlength="60" autocomplete="new-password">
+    <button class="btn" id="wsCreate" type="button">Create workspace</button>
+    <div class="ws-or mono">or join with a code</div>
+    <input id="wsCodeIn" placeholder="6-character code — e.g. DEMO01" maxlength="6" style="text-transform:uppercase">
+    <input id="wsJoinPassIn" type="password" placeholder="Workspace password (only if it's locked)" maxlength="60" style="display:none" autocomplete="current-password">
+    <button class="btn" id="wsJoin" type="button" style="background:var(--ink);color:var(--bg)">Join workspace</button>
+    <button class="tlink" id="wsDemo" type="button">Or just open the demo workspace →</button>
+  </div>
+</div>
+
+<!-- diagram modal -->
+<div class="modal" id="diagModal" hidden>
+  <div class="modal-in" style="max-width:1080px">
+    <div class="modal-head"><h4 class="mono">Strata diagram — generated from the ledger</h4><button class="reset" id="diagClose" type="button" aria-label="Close">✕</button></div>
+    <div class="diag-box" id="diagBox"></div>
+    <div class="exportbar" style="margin-top:16px">
+      <button class="btn" id="diagSvg" type="button">Download SVG</button>
+      <button class="btn" id="diagPng" type="button" style="background:var(--ink);color:var(--bg)">Download PNG</button>
+    </div>
+  </div>
+</div>
+
+<!-- release-notes modal -->
+<div class="modal" id="relModal" hidden>
+  <div class="modal-in">
+    <div class="modal-head"><h4 class="mono">Release notes — markdown</h4><button class="reset" id="relClose" type="button" aria-label="Close">✕</button></div>
+    <pre id="relPre"></pre>
+    <div class="exportbar" style="margin-top:16px">
+      <button class="btn" id="relCopy" type="button">Copy markdown</button>
+      <button class="btn" id="relDl" type="button" style="background:var(--ink);color:var(--bg)">Download .md</button>
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+}}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+const $  = (s, c=document) => c.querySelector(s);
+const $$ = (s, c=document) => [...c.querySelectorAll(s)];
+const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const KINDS = ['spec','decision','prototype','release'];
+const isFile = location.protocol === 'file:';
+
+/* ================= helpers ================= */
+function toast(html){
+  const el = document.createElement('div');
+  el.className = 'toast'; el.innerHTML = html;
+  $('#toasts').appendChild(el);
+  requestAnimationFrame(()=> el.classList.add('show'));
+  setTimeout(()=>{ el.classList.remove('show'); setTimeout(()=> el.remove(), 500); }, 4200);
+}
+function download(filename, data, type){
+  const blob = data instanceof Blob ? data : new Blob([data], {type});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=> URL.revokeObjectURL(a.href), 5000);
+}
+const escXml = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;');
+const ago = ts => { const s = (Date.now()-ts)/1e3;
+  if(s < 60) return 'just now';
+  if(s < 3600) return Math.floor(s/60)+'m ago';
+  if(s < 86400) return Math.floor(s/3600)+'h ago';
+  return new Date(ts).toLocaleDateString(); };
+
+/* ================= state + local fallback store ================= */
+const state = { ws:null, layers:[], activity:[], mode:'local', serverUp:false };
+
+const localStore = {
+  key:'strata-local-ws',
+  data:null,
+  load(){
+    try{ const raw = localStorage.getItem(this.key);
+      if(raw){ this.data = JSON.parse(raw); return; } }catch(e){}
+    this.seedDemo();
+  },
+  save(){ try{ localStorage.setItem(this.key, JSON.stringify(this.data)); }catch(e){} },
+  seedDemo(){
+    const now = Date.now(), D = 864e5, H = 36e5;
+    this.data = { id:'DEMO01', name:'Demo — Checkout Revamp', seq:8,
+      layers:[
+        {id:'L-1',kind:'spec',     title:'Checkout spec v1',            summary:'Baseline three-step checkout flow.',                 author:'You', status:'open',    note:'', reviewedBy:null, createdAt:now-9*D},
+        {id:'L-2',kind:'spec',     title:'Checkout spec v2 — guest flow',summary:'Adds guest checkout; removes forced account step.',  author:'You', status:'open',    note:'', reviewedBy:null, createdAt:now-7*D},
+        {id:'L-3',kind:'decision', title:'Adopt address autocomplete',  summary:'Autocomplete from step 2 to cut abandonment.',       author:'You', status:'approved',note:'Ship with v2.', reviewedBy:'Mara', createdAt:now-6*D},
+        {id:'L-4',kind:'prototype',title:'Prototype — one-page checkout',summary:'Single-page variant for usability test round 2.',    author:'You', status:'open',    note:'', reviewedBy:null, createdAt:now-4*D},
+        {id:'L-5',kind:'decision', title:'Drop coupon field from step 1',summary:'Move coupons to payment step; declutter entry.',     author:'You', status:'rejected',note:'Revisit after A/B.', reviewedBy:'Sam', createdAt:now-3*D},
+        {id:'L-6',kind:'prototype',title:'Prototype — payment-first layout',summary:'Payment-first ordering per test findings.',       author:'You', status:'open',    note:'', reviewedBy:null, createdAt:now-1*D},
+        {id:'L-7',kind:'release',  title:'Release 0.1 — internal dogfood',summary:'First internal build; support team only.',           author:'You', status:'open',    note:'', reviewedBy:null, createdAt:now-2*H}
+      ],
+      activity:[
+        {ts:now-6*D, actor:'human', action:'layer.signed', detail:'L-3 → approved by Mara'},
+        {ts:now-9*D, actor:'human', action:'layer.added',  detail:'L-1 · Checkout spec v1'}
+      ]};
+    this.save();
+  },
+  resetDemo(){ this.seedDemo(); }
+};
+
+function setState(ws, layers, activity, mode){
+  state.ws = ws; state.layers = layers; state.activity = activity; state.mode = mode;
+  window.dispatchEvent(new CustomEvent('strata:mode', {detail:{mode}}));
+  renderAll();
+}
+function afterMutation(actor, action, detail){
+  state.activity.unshift({ts:Date.now(), actor, action, detail});
+  state.activity = state.activity.slice(0, 60);
+  document.dispatchEvent(new CustomEvent('strata:changed', {detail:{actor, action}}));
+  renderAll();
+}
+function mirrorIfNew(actor, action, detail){
+  if(state.activity.some(a => a.action === action && a.detail === detail)) return;
+  afterMutation(actor, action, detail);
+}
+
+/* ================= API ops + auth ================= */
+const authKey = {
+  get: id => { try{ return localStorage.getItem('strata-key-'+id) || null; }catch(e){ return null; } },
+  set: (id,k) => { try{ k ? localStorage.setItem('strata-key-'+id, k) : localStorage.removeItem('strata-key-'+id); }catch(e){} }
+};
+const withKey = (id, extra={}) => {
+  const k = authKey.get(id);
+  return { ...extra, headers: { ...(extra.headers||{}), ...(k ? {'x-lamina-key': k} : {}) } };
+};
+async function pingServer(){
+  if(isFile) return false;
+  try{
+    const r = await fetch('/api/health', {signal: AbortSignal.timeout(2500)});
+    const d = await r.json();
+    return !!(d && d.ok);
+  }catch{ return false; }
+}
+async function apiLoad(id){
+  const r = await fetch('/api/workspaces/' + id, withKey(id));
+  const d = await r.json().catch(()=>({}));
+  if(r.status === 401 && d.locked){ const e = new Error(d.error); e.locked = true; throw e; }
+  if(!r.ok) throw new Error('not found');
+  return { ws:{id:d.id, name:d.name}, layers:d.layers, activity:d.activity };
+}
+async function apiAdd(id, title, kind, summary, actor){
+  const r = await fetch(`/api/workspaces/${id}/layers`, {method:'POST',
+    ...withKey(id, {headers:{'Content-Type':'application/json'}}),
+    body:JSON.stringify({title, kind, summary, actor})});
+  const d = await r.json();
+  if(!r.ok) throw new Error(d.error || 'request failed');
+  return d;
+}
+async function apiSign(id, layerId, reviewer, verdict, note, actor){
+  const r = await fetch(`/api/workspaces/${id}/signoffs`, {method:'POST',
+    ...withKey(id, {headers:{'Content-Type':'application/json'}}),
+    body:JSON.stringify({id:layerId, reviewer, verdict, note, actor})});
+  const d = await r.json();
+  if(!r.ok) throw new Error(d.error || 'request failed');
+  return d;
+}
+async function apiCreate(name, password){
+  const r = await fetch('/api/workspaces', {method:'POST',
+    headers:{'Content-Type':'application/json'}, body:JSON.stringify({name, password})});
+  const d = await r.json();
+  if(!r.ok) throw new Error(d.error || 'request failed');
+  return d;
+}
+
+/* ================= SSE live sync ================= */
+let es = null;
+function setConn(txt, cls){
+  const p = $('#connPill');
+  p.textContent = txt;
+  p.className = 'pill' + (cls ? ' ' + cls : '');
+}
+function connectStream(id){
+  if(es){ es.close(); es = null; }
+  if(state.mode !== 'server') return;
+  const k = authKey.get(id);
+  es = new EventSource(`/api/workspaces/${id}/stream` + (k ? `?key=${encodeURIComponent(k)}` : ''));
+  let everConnected = false;
+  es.addEventListener('hello', async ()=>{
+    setConn('live · synced', 'on');
+    if(everConnected){
+      try{
+        const d = await apiLoad(id);
+        state.layers = d.layers; state.activity = d.activity;
+        renderAll(); syncStack();
+        toast('<b>Reconnected.</b> Ledger resynced — nothing missed.');
+      }catch{}
+    }
+    everConnected = true;
+  });
+  es.addEventListener('layer.added', e => {
+    const l = JSON.parse(e.data);
+    if(!state.layers.some(x => x.id === l.id)){
+      state.layers.push(l);
+      mirrorIfNew(l.author.startsWith('Agent') ? 'agent' : 'human', 'layer.added', `${l.id} · ${l.title}`);
+    }
+  });
+  es.addEventListener('layer.signed', e => {
+    const d = JSON.parse(e.data);
+    const l = state.layers.find(x => x.id === d.id);
+    if(l && (l.status !== d.status || l.reviewedBy !== d.reviewer)){
+      l.status = d.status; l.reviewedBy = d.reviewer; l.note = d.note || '';
+      mirrorIfNew('human', 'layer.signed', `${d.id} → ${d.status} by ${d.reviewer}`);
+    }
+  });
+  es.onerror = ()=> setConn('reconnecting…');
+}
+
+/* ================= workspace open / create / join ================= */
+function updateUrl(id){
+  if(isFile) return;
+  try{ history.replaceState(null, '', '/w/' + id); }catch{}
+}
+function openServerWs(id){
+  apiLoad(id).then(d => {
+    setState(d.ws, d.layers, d.activity, 'server');
+    updateUrl(id);
+    try{ localStorage.setItem('strata-last-ws', id); }catch(e){}
+    connectStream(id);
+    toast(`<b>Workspace ${id}</b> loaded from server — live sync on.`);
+  }).catch(err => {
+    if(err && err.locked){
+      $('#wsJoinPassIn').style.display = 'block';
+      $('#wsCodeIn').value = id;
+      $('#wsModal').hidden = false;
+      $('#wsJoinPassIn').focus();
+      toast('<b>Locked workspace.</b> Enter its password to join.');
+    }else{
+      $('#wsModal').hidden = false;
+      toast(`<b>Workspace ${id}</b> not found on the server. Create or join another.`);
+    }
+  });
+}
+function openLocalWs(id, name){
+  setState({id, name}, localStore.data.layers, localStore.data.activity, 'local');
+  try{ localStorage.setItem('strata-last-ws', id); }catch(e){}
+  setConn('local mode · no sync', 'warn');
+}
+ $('#wsCreate').addEventListener('click', async ()=>{
+  const name = $('#wsNameIn').value.trim();
+  const password = $('#wsPassIn').value;
+  if(name.length < 3){ toast('<b>Name too short.</b> At least 3 characters.'); return; }
+  if(password && password.length < 4){ toast('<b>Password too short.</b> 4+ characters, or leave it empty.'); return; }
+  if(state.serverUp){
+    try{
+      const d = await apiCreate(name, password);
+      $('#wsModal').hidden = true; $('#wsNameIn').value = ''; $('#wsPassIn').value = '';
+      setState({id:d.id, name:d.name}, [], [], 'server');
+      updateUrl(d.id); connectStream(d.id);
+      toast(`<b>${d.id}</b> created${d.locked ? ' — <b>locked</b>. Share the link AND the password.' : '. Share the link — anyone who opens it sees this ledger.'}`);
+    }catch(err){ toast('<b>Could not create:</b> ' + escXml(err.message)); }
+  }else{
+    localStore.data = {id:'LOCAL1', name, seq:1, layers:[], activity:[]};
+    localStore.save();
+    $('#wsModal').hidden = true; $('#wsNameIn').value = ''; $('#wsPassIn').value = '';
+    openLocalWs('LOCAL1', name);
+    toast('<b>Local workspace.</b> Server unreachable — data stays in this browser only.');
+  }
+});
+ $('#wsJoin').addEventListener('click', async ()=>{
+  const code = $('#wsCodeIn').value.trim().toUpperCase();
+  const pass = $('#wsJoinPassIn').value;
+  if(!/^[A-Z0-9]{6}$/.test(code)){ toast('<b>Codes are 6 characters</b> — letters and digits, e.g. DEMO01.'); return; }
+  if(state.serverUp){
+    try{
+      if(pass){
+        const r = await fetch(`/api/workspaces/${code}/unlock`, {method:'POST',
+          headers:{'Content-Type':'application/json'}, body:JSON.stringify({password:pass})});
+        const d = await r.json();
+        if(!r.ok) throw new Error(d.error || 'unlock failed');
+        if(d.key) authKey.set(code, d.key);
+      }
+      $('#wsModal').hidden = true; $('#wsCodeIn').value = ''; $('#wsJoinPassIn').value = '';
+      $('#wsJoinPassIn').style.display = 'none';
+      openServerWs(code);
+    }catch(err){ toast('<b>Join failed:</b> ' + escXml(err.message)); }
+  }else{
+    localStore.seedDemo(); localStore.data.id = code;
+    $('#wsModal').hidden = true; $('#wsCodeIn').value = ''; $('#wsJoinPassIn').value = '';
+    $('#wsJoinPassIn').style.display = 'none';
+    openLocalWs(code, 'Local workspace ' + code);
+    toast('<b>Local mode:</b> codes only sync when the server is reachable.');
+  }
+});
+ $('#wsDemo').addEventListener('click', ()=>{
+  $('#wsModal').hidden = true;
+  if(state.serverUp) openServerWs('DEMO01');
+  else{ localStore.seedDemo(); openLocalWs('DEMO01', 'Demo — Checkout Revamp'); }
+});
+ $('#wsClose').addEventListener('click', ()=> $('#wsModal').hidden = true);
+ $('#switchWs').addEventListener('click', ()=> $('#wsModal').hidden = false);
+ $('#copyLink').addEventListener('click', ()=>{
+  if(!state.ws){ toast('<b>No workspace open yet.</b>'); return; }
+  navigator.clipboard?.writeText(location.href)
+    .then(()=> toast('<b>Link copied.</b> If the workspace is locked, share the password separately.'))
+    .catch(()=> toast('<b>Copy failed</b> — copy the address bar manually.'));
+});
+
+/* ================= boot ================= */
+function wsIdFromUrl(){
+  const m = location.pathname.match(/\/w\/([A-Za-z0-9]{6})/);
+  if(m) return m[1].toUpperCase();
+  const q = new URLSearchParams(location.search).get('w');
+  if(q && /^[A-Za-z0-9]{6}$/.test(q)) return q.toUpperCase();
+  const h = location.hash.match(/w\/?([A-Za-z0-9]{6})/);
+  if(h) return h[1].toUpperCase();
+  return null;
+}
+(async function boot(){
+  localStore.load();
+  state.serverUp = await pingServer();
+  const id = wsIdFromUrl() || (()=>{ try{ return localStorage.getItem('strata-last-ws'); }catch(e){ return null; } })();
+  if(id && state.serverUp){ openServerWs(id); }
+  else if(id && !state.serverUp){ openLocalWs(id, 'Local workspace'); toast('<b>Server unreachable</b> — running in local mode. Start it with <b>npm start</b>.'); }
+  else{ $('#wsModal').hidden = false; setConn(state.serverUp ? 'server ready' : 'local mode', state.serverUp ? '' : 'warn'); }
+})();
+
+/* ================= renders ================= */
+function renderWsBar(){
+  if(state.ws){
+    $('#wsCode').textContent = state.ws.id;
+    $('#wsName').textContent = state.ws.name;
+  }else{
+    $('#wsCode').textContent = '—';
+    $('#wsName').textContent = 'No workspace open';
+  }
+}
+function renderLayers(){
+  const box = $('#layerList');
+  if(!state.layers.length){
+    box.innerHTML = `<div class="empty">
+      <p class="mono">0 layers — an empty ledger</p>
+      <h4>Every project starts as layer one.</h4>
+      <p>Add your first spec, decision or prototype with the form on the left — or simply tell your agent what happened and watch it land here as a new slab in the stack above.</p>
+      <p class="mono">Try: “add a decision layer ‘we chose Postgres over Mongo’”</p>
+    </div>`;
+    return;
+  }
+  box.innerHTML = state.layers.map(l => `
+    <article class="layer" data-id="${l.id}">
+      <div class="l-top">
+        <span class="mono l-id">${l.id}</span>
+        <span class="tag mono k-${l.kind}">${l.kind}</span>
+        <span class="st mono ${l.status}">${l.status}</span>
+      </div>
+      <h4>${l.title.replace(/</g,'&lt;')}</h4>
+      ${l.summary ? `<p class="l-sum">${l.summary.replace(/</g,'&lt;')}</p>` : ''}
+      <p class="l-meta mono ${l.author.startsWith('Agent') ? 'l-agent' : ''}">${l.author} · ${ago(l.createdAt)}</p>
+      ${l.status === 'open' ? `
+        <div class="sign">
+          <input placeholder="Reviewer name" aria-label="Reviewer name for ${l.id}">
+          <button data-v="approved" type="button">Approve</button>
+          <button data-v="rejected" type="button">Reject</button>
+        </div>` : `
+        <p class="signed">${l.status} by ${l.reviewedBy}${l.note ? ' — “'+l.note.replace(/</g,'&lt;')+'”' : ''}</p>`}
+    </article>`).join('');
+}
+function renderFeed(){
+  $('#feed').innerHTML = state.activity.map(a => `
+    <li class="${a.actor}">
+      <span class="dot"></span>
+      <span><span class="who">${a.actor === 'agent' ? 'Agent' : 'You'}</span> · ${a.action}<br>${a.detail.replace(/</g,'&lt;')}</span>
+      <span class="when">${ago(a.ts)}</span>
+    </li>`).join('');
+}
+function fillCompareSelects(){
+  const opts = state.layers.map(l => `<option value="${l.id}">${l.id} — ${l.title.replace(/</g,'&lt;')}</option>`).join('');
+  $('#cmpA').innerHTML = opts; $('#cmpB').innerHTML = opts;
+  if(state.layers.length > 1) $('#cmpB').selectedIndex = state.layers.length - 2;
+}
+function renderAll(){ renderWsBar(); renderLayers(); fillCompareSelects(); renderFeed(); }
+
+/* ================= find layer (id, number or exact title) ================= */
+const findLayer = (ref) => {
+  if(ref == null) return null;
+  const s = String(ref).trim();
+  const byId = state.layers.find(l => l.id.toLowerCase() === s.toLowerCase());
+  if(byId) return byId;
+  const n = parseInt(s.replace(/\D/g,''), 10);
+  if(n){ const byN = state.layers.find(l => l.id === 'L-'+n); if(byN) return byN; }
+  return state.layers.find(l => l.title.toLowerCase() === s.toLowerCase()) || null;
+};
+
+/* ================= mutations (mode-aware) ================= */
+async function doAddLayer(title, kind, summary, actor){
+  if(state.mode === 'server' && state.ws){
+    const l = await apiAdd(state.ws.id, title, kind, summary, actor);
+    if(!state.layers.some(x => x.id === l.id)) state.layers.push(l);
+    afterMutation(actor, 'layer.added', `${l.id} · ${l.title}`);
+    return l;
+  }
+  if(!localStore.data) localStore.seedDemo();
+  const d = localStore.data;
+  const layer = {id:'L-'+(d.seq++), title, kind, summary,
+    author: actor==='agent' ? 'Agent (WebMCP)' : 'You',
+    status:'open', note:'', reviewedBy:null, createdAt:Date.now()};
+  d.layers.push(layer); localStore.save();
+  setStateKeepMode();
+  afterMutation(actor, 'layer.added', `${layer.id} · ${layer.title}`);
+  return layer;
+}
+async function doSignOff(layerId, reviewer, verdict, note, actor){
+  if(state.mode === 'server' && state.ws){
+    const d = await apiSign(state.ws.id, layerId, reviewer, verdict, note, actor);
+    const l = state.layers.find(x => x.id === d.id);
+    if(l){ l.status = d.status; l.reviewedBy = d.reviewer; l.note = d.note || ''; }
+    afterMutation(actor, 'layer.signed', `${d.id} → ${d.status} by ${d.reviewer}`);
+    return d;
+  }
+  const l = state.layers.find(x => x.id === layerId);
+  if(!l) throw new Error('layer not found');
+  l.status = verdict; l.reviewedBy = reviewer; l.note = note || '';
+  localStore.save();
+  afterMutation(actor, 'layer.signed', `${l.id} → ${verdict} by ${reviewer}`);
+  return l;
+}
+function setStateKeepMode(){ state.layers = localStore.data.layers; state.activity = localStore.data.activity; renderAll(); }
+
+ $('#layerForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const title = $('#lfTitle').value.trim();
+  if(!state.ws){ $('#wsModal').hidden = false; toast('<b>Open a workspace first.</b>'); return; }
+  if(title.length < 3){ toast('<b>Give the layer a real title</b> (3+ characters).'); return; }
+  try{
+    await doAddLayer(title, $('#lfKind').value, $('#lfSummary').value.trim(), 'human');
+    e.target.reset();
+  }catch(err){ toast('<b>Could not add layer:</b> ' + escXml(err.message)); }
+});
+ $('#layerList').addEventListener('click', async e => {
+  const btn = e.target.closest('button[data-v]');
+  if(!btn) return;
+  const card = btn.closest('.layer'), id = card.dataset.id;
+  const reviewer = $('input', card).value.trim();
+  if(!reviewer){ toast('<b>Sign-off needs a name.</b> Enter who’s approving or rejecting.'); $('input', card).focus(); return; }
+  try{ await doSignOff(id, reviewer, btn.dataset.v, '', 'human'); }
+  catch(err){ toast('<b>Sign-off failed:</b> ' + escXml(err.message)); }
+});
+ $('#resetDemo').addEventListener('click', async ()=>{
+  if(state.mode === 'server' && state.ws && state.ws.id === 'DEMO01'){
+    toast('<b>Demo reset works in local mode.</b> The server copy is shared — reset skipped to protect live data.');
+    return;
+  }
+  localStore.resetDemo();
+  if(state.ws) localStore.data.id = state.ws.id;
+  localStore.save();
+  setStateKeepMode();
+  toast('<b>Demo reset.</b> Fresh seed data loaded.');
+});
+
+/* ================= diff ================= */
+function diffLayers(a, b){
+  const fields = ['title','kind','status','summary','author','reviewedBy'];
+  return fields
+    .filter(f => (a[f] || null) !== (b[f] || null))
+    .map(f => ({field: f, a: a[f] || '—', b: b[f] || '—'}));
+}
+ $('#cmpGo').addEventListener('click', ()=>{
+  const a = findLayer($('#cmpA').value), b = findLayer($('#cmpB').value);
+  if(!a || !b) return;
+  const out = $('#cmpOut');
+  if(a.id === b.id){ out.innerHTML = 'Pick <b>two different</b> layers.'; return; }
+  const diffs = diffLayers(a, b);
+  out.innerHTML = diffs.length
+    ? diffs.map(d => `<b>${d.field}</b>: “${String(d.a).replace(/</g,'&lt;')}” → “${String(d.b).replace(/</g,'&lt;')}”`).join('<br>')
+    : `No tracked fields differ between <b>${a.id}</b> and <b>${b.id}</b>.`;
+});
+
+/* ================= release notes ================= */
+function buildReleaseNotes(title){
+  const approved = state.layers.filter(l => l.status === 'approved');
+  const wsName = state.ws ? state.ws.name : 'Workspace';
+  const lines = [`# ${title || ('Release notes — ' + wsName)}`, '',
+    `Generated from the ledger on ${new Date().toLocaleString()}.`, ''];
+  if(!approved.length){
+    lines.push('_No approved layers yet. Approve layers (or ask your agent to record sign-offs) before cutting a release._');
+    return lines.join('\n');
+  }
+  for(const k of KINDS){
+    const group = approved.filter(l => l.kind === k);
+    if(group.length){
+      lines.push(`## Approved ${k}s`);
+      group.forEach(l => lines.push(`- **${l.id}** — ${l.title}${l.reviewedBy ? ` (approved by ${l.reviewedBy})` : ''}`));
+      lines.push('');
+    }
+  }
+  return lines.join('\n');
+}
+function showReleaseNotes(md){
+  $('#relPre').textContent = md;
+  $('#relModal').hidden = false;
+}
+ $('#btnReleaseMd').addEventListener('click', ()=> showReleaseNotes(buildReleaseNotes()));
+ $('#relClose').addEventListener('click', ()=> $('#relModal').hidden = true);
+ $('#relModal').addEventListener('click', e => { if(e.target === $('#relModal')) $('#relModal').hidden = true; });
+ $('#relCopy').addEventListener('click', ()=>{
+  navigator.clipboard?.writeText($('#relPre').textContent)
+    .then(()=> toast('<b>Copied.</b> Markdown is on your clipboard.'))
+    .catch(()=> toast('<b>Copy failed</b> — select the text manually.'));
+});
+ $('#relDl').addEventListener('click', ()=>{
+  const id = state.ws ? state.ws.id : 'workspace';
+  download(`${id}-release-notes.md`, $('#relPre').textContent, 'text/markdown');
+  toast('<b>Downloaded.</b> Check your Downloads folder.');
+});
+
+/* ================= exports json / csv ================= */
+function localJson(){
+  return JSON.stringify({exportedAt:new Date().toISOString(),
+    workspace:{id:state.ws?.id, name:state.ws?.name},
+    layers:state.layers, activity:state.activity}, null, 2);
+}
+function localCsv(){
+  const esc = v => `"${String(v ?? '').replace(/"/g,'""')}"`;
+  const rows = [['id','kind','title','status','author','reviewedBy','createdAt','summary'].join(',')];
+  for(const l of state.layers)
+    rows.push([l.id,l.kind,l.title,l.status,l.author,l.reviewedBy||'',new Date(l.createdAt).toISOString(),l.summary].map(esc).join(','));
+  return rows.join('\n');
+}
+async function serverExport(path, filename, type){
+  const id = state.ws.id;
+  try{
+    const k = authKey.get(id);
+    const r = await fetch(`/api/workspaces/${id}/${path}` + (k ? `?key=${encodeURIComponent(k)}` : ''));
+    if(!r.ok){ const d = await r.json().catch(()=>({})); throw new Error(d.error || ('HTTP ' + r.status)); }
+    download(filename, await r.blob(), type);
+    return true;
+  }catch(err){
+    toast('<b>Export failed:</b> ' + escXml(err.message));
+    return false;
+  }
+}
+async function exportJson(){
+  if(!state.ws){ toast('<b>Open a workspace first.</b>'); return; }
+  const id = state.ws.id;
+  if(state.mode === 'server') await serverExport('export.json', id + '-ledger.json', 'application/json');
+  else download(id + '-ledger.json', localJson(), 'application/json');
+  toast('<b>JSON export</b> — full ledger + activity.');
+}
+async function exportCsv(){
+  if(!state.ws){ toast('<b>Open a workspace first.</b>'); return; }
+  const id = state.ws.id;
+  if(state.mode === 'server') await serverExport('export.csv', id + '-layers.csv', 'text/csv');
+  else download(id + '-layers.csv', localCsv(), 'text/csv');
+  toast('<b>CSV export</b> — opens in any spreadsheet.');
+}
+ $('#btnJson').addEventListener('click', exportJson);
+ $('#btnCsv').addEventListener('click', exportCsv);
+
+/* ================= diagram generator ================= */
+const KIND_FILL = {spec:'#DCD2BF', decision:'#BC4B1F', prototype:'#8A7F6C', release:'#1C1814'};
+const KIND_TEXT = {spec:'#1C1814', decision:'#F6F0E6', prototype:'#F6F0E6', release:'#F6F0E6'};
+function buildDiagramSVG(){
+  const L = state.layers, W = 1000, rowH = 72, headH = 150, footH = 84;
+  const H = headH + Math.max(L.length,1)*rowH + footH;
+  const wsName = state.ws ? state.ws.name : 'Workspace';
+  let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="Arial, Helvetica, sans-serif">`;
+  s += `<rect width="${W}" height="${H}" fill="#F7F2E9"/>`;
+  s += `<text x="60" y="56" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="bold" fill="#1C1814">${escXml(wsName)} — strata diagram</text>`;
+  s += `<text x="60" y="86" font-size="14" fill="#6A6152">Generated from the ledger on ${escXml(new Date().toLocaleString())} · ${L.length} layers · 0 overwritten</text>`;
+  s += `<line x1="60" y1="108" x2="${W-60}" y2="108" stroke="#1C1814" stroke-width="2"/>`;
+  if(!L.length){
+    s += `<text x="60" y="${headH+40}" font-size="16" fill="#6A6152">No layers yet.</text>`;
+  }
+  L.forEach((l, i) => {
+    const y = headH + i*rowH;
+    s += `<rect x="60" y="${y}" width="600" height="${rowH-14}" rx="10" fill="${KIND_FILL[l.kind] || '#DCD2BF'}"/>`;
+    s += `<text x="80" y="${y+26}" font-family="Consolas, Menlo, monospace" font-size="12" letter-spacing="2" fill="${KIND_TEXT[l.kind]}">${escXml(l.id)} · ${escXml(l.kind.toUpperCase())}</text>`;
+    s += `<text x="80" y="${y+48}" font-family="Georgia, 'Times New Roman', serif" font-size="17" fill="${KIND_TEXT[l.kind]}">${escXml(l.title)}</text>`;
+    const stColor = l.status === 'approved' ? '#2E7D4F' : l.status === 'rejected' ? '#9A3B1E' : '#6A6152';
+    s += `<text x="690" y="${y+26}" font-family="Consolas, Menlo, monospace" font-size="12" letter-spacing="1" fill="${stColor}">${escXml(l.status.toUpperCase())}${l.reviewedBy ? ' · ' + escXml(l.reviewedBy) : ''}</text>`;
+    s += `<text x="690" y="${y+48}" font-size="12" fill="#6A6152">${escXml(new Date(l.createdAt).toLocaleDateString())}${l.summary ? ' — ' + escXml(l.summary.slice(0,64)) : ''}</text>`;
+  });
+  const ly = H - footH + 30;
+  s += `<line x1="60" y1="${ly-24}" x2="${W-60}" y2="${ly-24}" stroke="#1C1814" stroke-width="2"/>`;
+  let lx = 60;
+  for(const k of KINDS){
+    s += `<rect x="${lx}" y="${ly}" width="16" height="16" rx="4" fill="${KIND_FILL[k]}"/>`;
+    s += `<text x="${lx+24}" y="${ly+13}" font-size="13" fill="#1C1814">${k}</text>`;
+    lx += 24 + k.length*9 + 40;
+  }
+  s += `<text x="${W-60}" y="${ly+13}" font-size="12" fill="#6A6152" text-anchor="end">strata · versioned decision ledger</text>`;
+  s += `</svg>`;
+  return s;
+}
+function showDiagram(){
+  if(!state.ws){ toast('<b>Open a workspace first.</b>'); return; }
+  $('#diagBox').innerHTML = buildDiagramSVG();
+  $('#diagModal').hidden = false;
+}
+ $('#btnDiagram').addEventListener('click', showDiagram);
+ $('#diagClose').addEventListener('click', ()=> $('#diagModal').hidden = true);
+ $('#diagModal').addEventListener('click', e => { if(e.target === $('#diagModal')) $('#diagModal').hidden = true; });
+ $('#diagSvg').addEventListener('click', ()=>{
+  const id = state.ws ? state.ws.id : 'workspace';
+  download(`${id}-diagram.svg`, buildDiagramSVG(), 'image/svg+xml');
+  toast('<b>SVG downloaded</b> — infinitely scalable, print-ready.');
+});
+ $('#diagPng').addEventListener('click', ()=>{
+  const svg = buildDiagramSVG();
+  const blob = new Blob([svg], {type:'image/svg+xml'});
+  const url = URL.createObjectURL(blob);
+  const img = new Image();
+  img.onload = ()=>{
+    const m = svg.match(/viewBox="0 0 (\d+) (\d+)"/);
+    const w = +m[1], h = +m[2];
+    const c = document.createElement('canvas');
+    c.width = w*2; c.height = h*2;
+    const ctx = c.getContext('2d');
+    ctx.scale(2,2);
+    ctx.drawImage(img, 0, 0, w, h);
+    URL.revokeObjectURL(url);
+    c.toBlob(b => {
+      if(b){ const id = state.ws ? state.ws.id : 'workspace';
+        download(`${id}-diagram.png`, b, 'image/png');
+        toast('<b>PNG downloaded</b> at 2× resolution.');
+      } else toast('<b>PNG export failed</b> — use SVG instead.');
+    }, 'image/png');
+  };
+  img.onerror = ()=>{ URL.revokeObjectURL(url); toast('<b>PNG export failed</b> — use SVG instead.'); };
+  img.src = url;
+});
+addEventListener('keydown', e => {
+  if(e.key === 'Escape'){ $('#relModal').hidden = true; $('#diagModal').hidden = true; $('#wsModal').hidden = true; }
+});
+
+/* ================= chrome (theme/menu/cursor/etc) ================= */
+const themeBtns = $$('.lab button');
+function setTheme(name, announce){
+  document.documentElement.dataset.theme = name;
+  try{ localStorage.setItem('strata-theme', name); }catch(e){}
+  themeBtns.forEach(b => b.classList.toggle('on', b.dataset.set === name));
+  window.dispatchEvent(new CustomEvent('strata:theme', {detail:{name}}));
+  if(announce) toast(`<b>Theme:</b> ${name}.`);
+}
+themeBtns.forEach(b => b.addEventListener('click', ()=> setTheme(b.dataset.set, true)));
+setTheme(document.documentElement.dataset.theme || 'atelier', false);
+
+const header = $('#header');
+addEventListener('scroll', ()=> header.classList.toggle('scrolled', scrollY > 8), {passive:true});
+const menu = $('#menu'), burger = $('#burger');
+function menuToggle(open){
+  menu.classList.toggle('open', open);
+  menu.setAttribute('aria-hidden', String(!open));
+  burger.setAttribute('aria-expanded', String(open));
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+burger.addEventListener('click', ()=> menuToggle(true));
+ $('#menuClose').addEventListener('click', ()=> menuToggle(false));
+ $$('.menu nav a').forEach(a => a.addEventListener('click', ()=> menuToggle(false)));
+
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+}), {threshold:.12, rootMargin:'0px 0px -6% 0px'});
+ $$('.rv').forEach(el => io.observe(el));
+
+const caps = $$('.cap');
+function openCap(cap, open){
+  const body = $('.cap-body', cap), head = $('.cap-head', cap);
+  cap.classList.toggle('open', open);
+  head.setAttribute('aria-expanded', String(open));
+  body.style.maxHeight = open ? body.scrollHeight + 'px' : '0px';
+}
+caps.forEach(cap => $('.cap-head', cap).addEventListener('click', ()=> openCap(cap, !cap.classList.contains('open'))));
+
+if(fine){
+  const prev = $('#capPreview'), pImg = $('#capPreviewImg'), pCap = $('#capPreviewCap');
+  let tx=0, ty=0, px=0, py=0;
+  const list = $('#capList');
+  list.addEventListener('mousemove', e => { tx = e.clientX + 28; ty = e.clientY - 110; });
+  caps.forEach((cap, i) => {
+    $('.cap-head', cap).addEventListener('mouseenter', ()=>{
+      pImg.src = cap.dataset.img;
+      pCap.textContent = `Fig. 0${i+1} — ${$('.cap-title', cap).textContent}`;
+      prev.classList.add('show');
+    });
+    $('.cap-head', cap).addEventListener('mouseleave', ()=> prev.classList.remove('show'));
+  });
+  (function loop(){
+    px += (tx - px) * .14; py += (ty - py) * .14;
+    const tilt = Math.max(-6, Math.min(6, (tx - px) * .06));
+    prev.style.transform = `translate(${px}px, ${py}px) rotate(${tilt}deg)`;
+    requestAnimationFrame(loop);
+  })();
+}
+
+const statIO = new IntersectionObserver(es => es.forEach(e => {
+  if(!e.isIntersecting) return;
+  statIO.unobserve(e.target);
+  const el = e.target, target = parseFloat(el.dataset.count),
+        dec = +(el.dataset.decimals || 0), suf = el.dataset.suffix || '';
+  const t0 = performance.now(), dur = 1500;
+  (function tick(now){
+    const p = Math.min(1, (now - t0) / dur), ease = 1 - Math.pow(1 - p, 3);
+    const v = target * ease;
+    el.textContent = (dec ? v.toFixed(dec) : Math.round(v).toLocaleString('en-US')) + suf;
+    if(p < 1) requestAnimationFrame(tick);
+  })(t0);
+}), {threshold:.6});
+ $$('[data-count]').forEach(el => statIO.observe(el));
+
+ $('#accessForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const input = $('#accessEmail'), msg = $('#formMsg');
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim())){
+    msg.textContent = 'That address doesn’t look right — try again.';
+    msg.className = 'form-msg mono err'; input.focus(); return;
+  }
+  try{ localStorage.setItem('strata-waitlist', input.value.trim()); }catch(err){}
+  msg.textContent = 'You’re on the list — saved locally until the endpoint is wired.';
+  msg.className = 'form-msg mono'; e.target.reset();
+  toast('<b>Saved.</b> Hand me a signup endpoint and this goes live.');
+});
+
+setInterval(()=>{ $('#clock').textContent =
+  new Date().toLocaleTimeString('en-GB', {hour12:false}); }, 1000);
+ $$('[data-dead]').forEach(a => a.addEventListener('click', e => {
+  e.preventDefault();
+  toast('<b>Placeholder.</b> Give me the real URL and it’s wired in a minute.');
+}));
+
+if(fine && !reduced){
+  document.documentElement.classList.add('has-cursor');
+  const cur = $('#cursor');
+  let cx = innerWidth/2, cy = innerHeight/2, mx = cx, my = cy;
+  addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; }, {passive:true});
+  (function loop(){
+    cx += (mx - cx) * .22; cy += (my - cy) * .22;
+    cur.style.transform = `translate(${cx}px, ${cy}px) translate(-50%,-50%)`;
+    requestAnimationFrame(loop);
+  })();
+  const grow = ()=> cur.classList.add('big'), shrink = ()=> cur.classList.remove('big');
+  $$('a, button, input, select, .cap-head').forEach(el => {
+    el.addEventListener('mouseenter', grow); el.addEventListener('mouseleave', shrink);
+  });
+  $('#stage').addEventListener('mouseenter', grow);
+  $('#stage').addEventListener('mouseleave', shrink);
+}
+
+/* ================= 3D — the stack mirrors the ledger =================
+   Foundation slab = the append-only ledger everything sits on.
+   Hover = dismantle (layers fan apart). Drag = rotate + tilt.       */
+const wrap = $('#stage');
+const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+wrap.appendChild(renderer.domElement);
+
+const scene  = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(30, 1, .1, 100);
+camera.position.set(4.4, 1.7, 7.0);
+camera.lookAt(0, .1, 0);
+
+scene.add(new THREE.HemisphereLight(0xffffff, 0x777264, .75));
+const key = new THREE.DirectionalLight(0xfff4e6, 1.35);
+key.position.set(5, 9, 4); key.castShadow = true;
+key.shadow.mapSize.set(1024, 1024);
+Object.assign(key.shadow.camera, {left:-5, right:5, top:5, bottom:-5, near:1, far:24});
+scene.add(key);
+const rim = new THREE.DirectionalLight(0xdfe8ff, .5);
+rim.position.set(-6, 3, -5); scene.add(rim);
+
+const floor = new THREE.Mesh(new THREE.CircleGeometry(4.4, 48),
+  new THREE.ShadowMaterial({opacity:.16}));
+floor.rotation.x = -Math.PI/2; floor.position.y = -2.5;
+floor.receiveShadow = true; scene.add(floor);
+
+const GEO = new RoundedBoxGeometry(2.7, .32, 1.7, 4, .09);
+const BASE_GEO = new RoundedBoxGeometry(3.15, .24, 2.05, 4, .09);
+const mats = [0,1,2,3,4].map(()=> new THREE.MeshStandardMaterial({roughness:.55, metalness:.06}));
+const KIND_MAT = {spec:1, decision:2, prototype:0, release:3};
+const THEME_3D = {
+  atelier:    ['#241E17', '#DCD2BF', '#BC4B1F', '#8A7F6C', '#3A322A'],
+  signal:     ['#E8E5DC', '#33372F', '#FF5A1F', '#6B7166', '#4A4E44'],
+  greenhouse: ['#E9E2D0', '#28402F', '#C9A227', '#5E7263', '#50411F']
+};
+function applyTheme3D(name){
+  (THEME_3D[name] || THEME_3D.atelier).forEach((hex, i) => mats[i].color.set(hex));
+  floor.material.opacity = name === 'atelier' ? .16 : .3;
+}
+applyTheme3D(document.documentElement.dataset.theme || 'atelier');
+addEventListener('strata:theme', e => applyTheme3D(e.detail.name));
+
+const group = new THREE.Group(); scene.add(group);
+const slabs = [];
+const foundation = new THREE.Mesh(BASE_GEO, mats[4]);
+foundation.castShadow = true;
+group.add(foundation);
+const clock = new THREE.Clock();
+
+function syncStack(){
+  const target = Math.min(Math.max(state.layers.length, 1), 12);
+  while(slabs.length < target){
+    const m = new THREE.Mesh(GEO, mats[1]);
+    m.castShadow = true;
+    m.userData.spawn = reduced ? 1 : 0;
+    group.add(m); slabs.push(m);
+  }
+  while(slabs.length > target){ group.remove(slabs.pop()); }
+  const view = state.layers.slice(-target);
+  slabs.forEach((s, i) => { if(view[i]) s.material = mats[KIND_MAT[view[i].kind]] ?? mats[1]; });
+}
+document.addEventListener('strata:changed', e => {
+  syncStack();
+  if(e.detail.actor === 'agent')
+    toast(`<b>Agent acted:</b> ${e.detail.action} — check the activity feed.`);
+});
+syncStack();
+
+let spinAngle = -.4, spinVel = 0, dragging = false, lastX = 0, lastY = 0, tiltAngle = 0;
+let mNX = 0, mNY = 0, spread = 0, intro = 0, visible = true;
+let hoverT = 0, hoverTarget = 0;
+
+wrap.addEventListener('pointerdown', e => {
+  dragging = true; lastX = e.clientX; lastY = e.clientY;
+  wrap.setPointerCapture(e.pointerId);
+});
+wrap.addEventListener('pointermove', e => {
+  if(!dragging) return;
+  const dx = e.clientX - lastX, dy = e.clientY - lastY;
+  lastX = e.clientX; lastY = e.clientY;
+  spinVel = dx * .0045; spinAngle += dx * .0045;
+  tiltAngle = Math.max(-.5, Math.min(.7, tiltAngle + dy * .003));
+});
+addEventListener('pointerup', ()=> dragging = false);
+if(fine && !reduced){
+  wrap.addEventListener('mouseenter', ()=> hoverTarget = 1);
+  wrap.addEventListener('mouseleave', ()=>{ hoverTarget = 0; dragging = false; });
+}
+addEventListener('mousemove', e => {
+  mNX = (e.clientX / innerWidth - .5) * 2;
+  mNY = (e.clientY / innerHeight - .5) * 2;
+}, {passive:true});
+
+new IntersectionObserver(([e]) => visible = e.isIntersecting, {threshold:.02}).observe(wrap);
+
+function resize(){
+  const w = wrap.clientWidth, h = wrap.clientHeight;
+  renderer.setSize(w, h);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(wrap);
+resize();
+
+const easeOut = t => 1 - Math.pow(1 - t, 3);
+(function frame(){
+  requestAnimationFrame(frame);
+  const dt = Math.min(clock.getDelta(), .05);
+  if(!visible || document.hidden) return;
+
+  intro = Math.min(1, intro + dt / 1.6);
+  const e = easeOut(intro);
+  hoverT += (hoverTarget - hoverT) * .07;
+
+  const p = Math.max(0, Math.min(1, scrollY / (innerHeight * .9)));
+  spread += ((p * .55) * e - spread) * .08;
+
+  const t = clock.elapsedTime, N = slabs.length;
+  const gap = .62 * (1 + (reduced ? 0 : .9) * spread + (1 - e) * 1.6 + hoverT * 1.15);
+  const drift = hoverT * .6;
+
+  slabs.forEach((s, i) => {
+    if(s.userData.spawn < 1) s.userData.spawn = Math.min(1, s.userData.spawn + dt / .6);
+    const spawnS = .2 + .8 * easeOut(s.userData.spawn);
+    const off = i - (N - 1) / 2;
+    s.position.y = off * gap + (reduced ? 0 : Math.sin(t * 1.1 + i * .7) * .05);
+    s.position.x = off * drift * .5;
+    s.position.z = off * drift * .3;
+    s.rotation.y = off * (.16 + spread * .45) + hoverT * .35 * (i % 2 ? 1 : -1);
+    s.scale.setScalar((.6 + .4 * e) * spawnS);
+  });
+
+  foundation.position.y = -((N - 1) / 2) * gap - .52;
+  foundation.scale.setScalar(.6 + .4 * e);
+
+  if(!dragging){
+    spinVel *= Math.exp(-2.2 * dt);
+    tiltAngle *= Math.exp(-.5 * dt);
+  }
+  if(!reduced) spinAngle += spinVel + (dragging ? 0 : .096 * dt);
+  group.rotation.y += (spinAngle + mNX * .1 - group.rotation.y) * .1;
+  group.rotation.x += ((.14 + mNY * .06 - spread * .12 + tiltAngle) - group.rotation.x) * .06;
+
+  renderer.render(scene, camera);
+})();
+
+/* ================================================================
+   WEBMCP INTEGRATION — required surface: document.modelContext.registerTool
+   10 tools over the live ledger. Server-backed when the API is up;
+   local fallback keeps them working offline. Feature-detected.
+   ================================================================ */
+const mcpTools = [
+  { name:'list_layers',
+    description:'List every layer in the open workspace — id, title, kind (spec|decision|prototype|release), status, author, summary and sign-off info. Call this first to understand the current state.',
+    inputSchema:{type:'object', properties:{}},
+    execute: async () => ({workspace: state.ws?.id || null, mode: state.mode, count: state.layers.length,
+      layers: state.layers.map(l => ({id:l.id, title:l.title, kind:l.kind, status:l.status,
+        author:l.author, summary:l.summary, reviewedBy:l.reviewedBy || null, note:l.note || null}))}) },
+
+  { name:'add_layer',
+    description:'Add a new versioned layer to the workspace on behalf of the human. Use when the user describes a decision made, a spec version, a prototype or a release.',
+    inputSchema:{type:'object',
+      properties:{ title:{type:'string', description:'Short title, e.g. "Checkout spec v3"'},
+        kind:{type:'string', enum:KINDS, description:'What kind of layer this is'},
+        summary:{type:'string', description:'One sentence on what this layer captures'} },
+      required:['title','kind']},
+    execute: async ({title, kind, summary=''}) => {
+      title = String(title).trim();
+      if(title.length < 3) return {error:'title must be at least 3 characters'};
+      if(!KINDS.includes(kind)) return {error:`kind must be one of: ${KINDS.join(', ')}`};
+      if(!state.ws) return {error:'no workspace open — the human must open one first'};
+      try{ const l = await doAddLayer(title, kind, String(summary).trim(), 'agent');
+        return {added:l.id, layer:{id:l.id, title:l.title, kind:l.kind, status:l.status}}; }
+      catch(err){ return {error: err.message}; } } },
+
+  { name:'sign_off',
+    description:'Record a sign-off (approval or rejection) on a layer, attributed to a named human reviewer. Only use when the human has clearly stated their verdict.',
+    inputSchema:{type:'object',
+      properties:{ id:{type:'string', description:'Layer id, e.g. "L-3"'},
+        reviewer:{type:'string', description:'Name of the human giving the verdict'},
+        verdict:{type:'string', enum:['approved','rejected']},
+        note:{type:'string', description:'Optional one-line note recorded with the sign-off'} },
+      required:['id','reviewer','verdict']},
+    execute: async ({id, reviewer, verdict, note=''}) => {
+      const l = findLayer(id);
+      if(!l) return {error:`no layer found for "${id}" — call list_layers first`};
+      if(!String(reviewer).trim()) return {error:'reviewer name is required — sign-offs are attributed to a human'};
+      try{ const s = await doSignOff(l.id, String(reviewer).trim(), verdict, String(note), 'agent');
+        return {signed:s.id, status:s.status, reviewer:s.reviewedBy}; }
+      catch(err){ return {error: err.message}; } } },
+
+  { name:'compare_layers',
+    description:'Diff two layers field by field (title, kind, status, summary, author, reviewer). Great for "what changed between v1 and v2?" questions.',
+    inputSchema:{type:'object',
+      properties:{ a:{type:'string', description:'First layer id or exact title'},
+        b:{type:'string', description:'Second layer id or exact title'} },
+      required:['a','b']},
+    execute: async ({a, b}) => {
+      const la = findLayer(a), lb = findLayer(b);
+      if(!la) return {error:`no layer found for "${a}"`};
+      if(!lb) return {error:`no layer found for "${b}"`};
+      if(la.id === lb.id) return {error:'pick two different layers'};
+      const differences = diffLayers(la, lb);
+      return {a:{id:la.id, title:la.title}, b:{id:lb.id, title:lb.title},
+        identical: differences.length === 0, differences}; } },
+
+  { name:'draft_release_notes',
+    description:'Generate markdown release notes from all approved layers. The notes also open in a modal in the page so the human can review, copy, or download them as .md.',
+    inputSchema:{type:'object',
+      properties:{ title:{type:'string', description:'Title for the release, e.g. "Release 0.2 — guest checkout"'} }},
+    execute: async ({title}={}) => {
+      const md = buildReleaseNotes(title || 'Release notes');
+      showReleaseNotes(md);
+      return {markdown: md,
+        approvedLayers: state.layers.filter(l => l.status === 'approved').length}; } },
+
+  { name:'generate_diagram',
+    description:'Generate a strata diagram (SVG) of the whole ledger — every layer as a kind-colored band with status and sign-off annotations. It opens in the page for the human; it can be downloaded as SVG or PNG.',
+    inputSchema:{type:'object', properties:{}},
+    execute: async () => {
+      showDiagram();
+      const kinds = {};
+      for(const l of state.layers) kinds[l.kind] = (kinds[l.kind] || 0) + 1;
+      return {opened:true, layers: state.layers.length, byKind: kinds}; } },
+
+  { name:'export_workspace',
+    description:'Export the workspace. format=json (full ledger + activity), format=csv (layers spreadsheet), format=markdown (release notes). The download starts in the browser.',
+    inputSchema:{type:'object',
+      properties:{ format:{type:'string', enum:['json','csv','markdown']} }, required:['format']},
+    execute: async ({format}) => {
+      if(!state.ws) return {error:'no workspace open'};
+      const id = state.ws.id;
+      const qs = authKey.get(id) ? `?key=${encodeURIComponent(authKey.get(id))}` : '';
+      if(format === 'json'){
+        if(state.mode === 'server'){ const a=document.createElement('a'); a.href=`/api/workspaces/${id}/export.json${qs}`; a.click(); }
+        else download(`${id}-ledger.json`, localJson(), 'application/json');
+        return {downloaded:`${id}-ledger.json`, layers: state.layers.length};
+      }
+      if(format === 'csv'){
+        if(state.mode === 'server'){ const a=document.createElement('a'); a.href=`/api/workspaces/${id}/export.csv${qs}`; a.click(); }
+        else download(`${id}-layers.csv`, localCsv(), 'text/csv');
+        return {downloaded:`${id}-layers.csv`, layers: state.layers.length};
+      }
+      const md = buildReleaseNotes();
+      download(`${id}-release-notes.md`, md, 'text/markdown');
+      return {downloaded:`${id}-release-notes.md`,
+        approvedLayers: state.layers.filter(l => l.status === 'approved').length}; } },
+
+  { name:'get_activity',
+    description:'Return the recent activity feed — every human and agent action on the ledger, newest first.',
+    inputSchema:{type:'object',
+      properties:{ limit:{type:'number', description:'Max entries to return (default 15)'} }},
+    execute: async ({limit=15}={}) =>
+      ({entries: state.activity.slice(0, Math.max(1, Math.min(40, limit)))
+        .map(a => ({time:new Date(a.ts).toISOString(), actor:a.actor, action:a.action, detail:a.detail}))}) },
+
+  { name:'navigate',
+    description:'Scroll the page to a named section.',
+    inputSchema:{type:'object',
+      properties:{ section:{enum:['notes','capabilities','workspace','process','access']} },
+      required:['section']},
+    execute: async ({section}) => {
+      const el = document.getElementById(section);
+      if(!el) return `section ${section} not found`;
+      el.scrollIntoView({behavior:'smooth'});
+      return `navigated to ${section}`; } },
+
+  { name:'set_theme',
+    description:'Switch the site design system. Purely presentational.',
+    inputSchema:{type:'object',
+      properties:{ theme:{enum:['atelier','signal','greenhouse']} }, required:['theme']},
+    execute: async ({theme}) => { setTheme(theme, false); return `theme set to ${theme}`; } }
+];
+
+(function initWebMCP(){
+  const pill = $('#mcpPill');
+  const mc = (document.modelContext && typeof document.modelContext.registerTool === 'function')
+    ? document.modelContext
+    : (navigator.modelContext && typeof navigator.modelContext.registerTool === 'function') ? navigator.modelContext : null;
+  if(!mc){
+    if(pill){ pill.textContent = 'WebMCP · not detected'; }
+    console.info('[Strata] WebMCP bridge not detected. Open in ChatGPT’s in-app browser, or Chrome 149+ with chrome://flags/#enable-webmcp-testing. The page works normally without it.');
+    return;
+  }
+  let ok = 0;
+  for(const t of mcpTools){
+    try{
+      if(mc === document.modelContext) document.modelContext.registerTool(t); // required surface, verbatim
+      else mc.registerTool(t);
+      ok++;
+    }
+    catch(err){ console.warn('[WebMCP] registration failed:', t.name, err); }
+  }
+  const update = ()=>{ pill.textContent = `WebMCP · ${ok} tools live · ${state.mode}`; pill.classList.add('on'); };
+  update();
+  document.addEventListener('strata:changed', update);
+  addEventListener('strata:mode', update);
+  console.info(`[Strata] ${ok}/${mcpTools.length} WebMCP tools registered. Inspect via Chrome DevTools (WebMCP tool debugging).`);
+  toast(`<b>WebMCP active.</b> ${ok} agent tools registered on this page.`);
+})();
+</script>
+</body>
+</html>
