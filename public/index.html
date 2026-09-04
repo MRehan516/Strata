@@ -72,12 +72,12 @@ header.scrolled{background:color-mix(in srgb,var(--bg) 84%,transparent);backdrop
 .brand svg{width:22px;height:22px;color:var(--accent)}
 .brand b{font:var(--disp-weight) 21px var(--font-display);letter-spacing:-.01em;font-variation-settings:"opsz" 40}
 nav.links{display:flex;gap:30px}
-nav.links a{text-decoration:none;position:relative;padding:4px 0}
+nav.links a{text-decoration:none;position:relative;padding:4px 0;cursor:pointer}
 nav.links a::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:100%;background:var(--ink);
   transform:scaleX(0);transform-origin:right;transition:transform .35s var(--ease)}
 nav.links a:hover::after{transform:scaleX(1);transform-origin:left}
 .hd-cta{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border:1px solid var(--ink);
-  border-radius:999px;padding:9px 18px;font:500 13.5px var(--font-body);transition:background .25s,color .25s}
+  border-radius:999px;padding:9px 18px;font:500 13.5px var(--font-body);transition:background .25s,color .25s;cursor:pointer}
 .hd-cta:hover{background:var(--ink);color:var(--bg)}
 .burger{display:none;width:42px;height:42px;align-items:center;justify-content:center}
 .burger svg{width:24px;height:24px}
@@ -121,7 +121,6 @@ h1 em{font-style:italic;font-weight:480;color:var(--accent)}
   opacity:0;will-change:transform,opacity}
 .stage-labels .slab-label b{color:var(--accent);font-weight:600;letter-spacing:.12em}
 .stage-labels .slab-label.found{background:var(--bg-raised);color:var(--ink);border:1px solid var(--line)}
-.stage-labels .slab-label.found b{color:var(--accent)}
 .stage-note{position:absolute;top:6px;right:0;display:flex;align-items:center;gap:8px;color:var(--ink-soft)}
 .stage-note svg{width:15px;height:15px}
 .hero-hint{position:absolute;bottom:-6px;left:0;display:flex;align-items:center;gap:10px;color:var(--ink-soft)}
@@ -153,8 +152,6 @@ h1 em{font-style:italic;font-weight:480;color:var(--accent)}
 .notes-copy p{margin-top:26px;color:var(--ink-soft);max-width:56ch}
 .figs{display:flex;flex-direction:column;gap:34px;padding-top:14px}
 .figs figure:nth-child(2){align-self:flex-end;width:82%}
-.figs img{width:100%;filter:grayscale(1) sepia(.14) contrast(1.04);transition:filter .5s}
-.figs figure:hover img{filter:none}
 .figs .figsvg{width:100%;height:auto;display:block;
   filter:grayscale(1) sepia(.14) contrast(1.04);transition:filter .5s}
 .figs figure:hover .figsvg{filter:none}
@@ -190,7 +187,13 @@ h1 em{font-style:italic;font-weight:480;color:var(--accent)}
   font:500 10px var(--font-mono);letter-spacing:.14em;text-transform:uppercase}
 @media (hover:none){.cap-preview{display:none}}
 
-/* ---- workspace ---- */
+/* ---- APP VIEW ---- */
+.app-top{display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  padding:calc(var(--header-h) + 20px) 0 8px}
+.backlink{display:inline-flex;align-items:center;gap:8px;text-decoration:none;
+  font:600 12px var(--font-mono);letter-spacing:.14em;text-transform:uppercase;
+  border:1px solid var(--line);border-radius:999px;padding:9px 16px;transition:background .2s,color .2s}
+.backlink:hover{background:var(--ink);color:var(--bg)}
 .tag.k-spec{background:#DCD2BF;color:#1C1814;border-color:transparent}
 .tag.k-decision{background:var(--accent);color:var(--accent-ink);border-color:transparent}
 .tag.k-prototype{background:#8A7F6C;color:#F6F0E6;border-color:transparent}
@@ -208,17 +211,18 @@ h1 em{font-style:italic;font-weight:480;color:var(--accent)}
 .reset:hover{color:var(--accent);border-color:var(--accent)}
 .exportbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
 .exportbar .tlink{font-size:13.5px}
-.ws-form{display:flex;flex-direction:column;gap:12px;margin-top:30px}
-.ws-form input,.ws-form select,.sign input{background:var(--bg-raised);border:1px solid var(--line);
-  border-radius:10px;padding:12px 14px;font-size:15px;width:100%}
+.ws-form{display:flex;flex-direction:column;gap:14px;margin-top:30px}
+#viewApp .ws-form input,#viewApp .ws-form select,.sign input{background:var(--bg-raised);border:1px solid var(--line);
+  border-radius:12px;padding:16px 18px;font-size:17px;width:100%}
 .ws-form input::placeholder,.sign input::placeholder{color:var(--ink-soft)}
 .ws-form input:focus,.ws-form select:focus,.sign input:focus{outline:none;border-color:var(--accent)}
+#viewApp .btn{padding:17px 30px;font-size:16px}
 .ws-row{display:flex;gap:10px}
-.ws-row select{flex:0 0 140px}
+#viewApp .ws-row select{flex:0 0 170px;font-size:16.5px;padding:16px 14px}
 .ws-note{margin-top:14px;color:var(--ink-soft);font-size:14px}
 .cmp{margin-top:36px;border-top:1px solid var(--line);padding-top:22px}
 .cmp h4{margin-bottom:12px}
-.cmp select{flex:1;background:var(--bg-raised);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px}
+.cmp select{flex:1;background:var(--bg-raised);border:1px solid var(--line);border-radius:10px;padding:12px;font-size:14.5px}
 .cmp-out{margin-top:14px;color:var(--ink-soft);font-size:12px;line-height:1.9;letter-spacing:.02em;text-transform:none}
 .cmp-out b{color:var(--accent);font-weight:600}
 .layers{display:flex;flex-direction:column;gap:14px}
@@ -235,8 +239,8 @@ h1 em{font-style:italic;font-weight:480;color:var(--accent)}
 .l-meta{margin-top:10px;color:var(--ink-soft)}
 .l-agent{color:var(--accent)}
 .sign{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-.sign input{flex:1 1 140px}
-.sign button{border:1px solid var(--ink);border-radius:999px;padding:8px 16px;font:600 13px var(--font-body);transition:background .2s,color .2s}
+.sign input{flex:1 1 150px}
+.sign button{border:1px solid var(--ink);border-radius:999px;padding:9px 18px;font:600 13px var(--font-body);transition:background .2s,color .2s}
 .sign button:hover{background:var(--ink);color:var(--bg)}
 .signed{margin-top:10px;font-size:13.5px;color:var(--ink-soft);border-left:2px solid var(--accent);padding-left:10px}
 .feed-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
@@ -247,6 +251,17 @@ h1 em{font-style:italic;font-weight:480;color:var(--accent)}
 .feed li.agent .who{color:var(--accent);font-weight:600}
 .feed .who{font-weight:600}
 .feed .when{margin-left:auto;color:var(--ink-soft);flex:none;font-size:11.5px}
+
+.obx{background:var(--bg-raised);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:24px}
+.obx-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.obx ol{list-style:none;display:flex;flex-direction:column;gap:8px}
+.obx li{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ink-soft);transition:color .3s}
+.obx li .box{flex:none;width:18px;height:18px;border:1.5px solid var(--line);border-radius:5px;margin-top:3px;
+  display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--accent-ink);background:transparent;transition:all .3s}
+.obx li.done{color:var(--ink)}
+.obx li.done .box{background:var(--accent);border-color:var(--accent)}
+.obx li b{color:var(--ink)}
+.obx li.done b{color:var(--accent)}
 
 .method{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:clamp(32px,6vw,96px)}
 .method-left{position:sticky;top:calc(var(--header-h) + 32px);align-self:start}
@@ -281,7 +296,7 @@ footer{border-top:1px solid var(--ink);padding:clamp(56px,7vw,90px) 0 34px}
 .ft-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
 .ft-brand p{color:var(--ink-soft);margin-top:16px;max-width:30ch;font-size:15px}
 .ft-col h4{margin-bottom:18px;color:var(--ink-soft)}
-.ft-col a{display:block;text-decoration:none;padding:5px 0;font-size:15px;width:fit-content;position:relative}
+.ft-col a{display:block;text-decoration:none;padding:5px 0;font-size:15px;width:fit-content;position:relative;cursor:pointer}
 .ft-col a::after{content:"";position:absolute;left:0;bottom:2px;height:1px;width:100%;background:var(--ink);
   transform:scaleX(0);transform-origin:right;transition:transform .3s var(--ease)}
 .ft-col a:hover::after{transform:scaleX(1);transform-origin:left}
@@ -324,7 +339,7 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
 .sb-ws button .code{color:var(--accent);font-weight:600}
 .sb-ws button small{color:var(--ink-soft);font-size:11.5px}
 .sb-nav{display:flex;flex-direction:column}
-.sb-nav a{text-decoration:none;padding:9px 4px;border-bottom:1px solid var(--line);font-size:14px}
+.sb-nav a{text-decoration:none;padding:9px 4px;border-bottom:1px solid var(--line);font-size:14px;cursor:pointer}
 .sb-nav a:hover{color:var(--accent)}
 .sb-theme{display:flex;gap:8px}
 .sb-theme button{flex:1;border:1px solid var(--line);border-radius:10px;padding:9px 0;
@@ -361,8 +376,8 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
 .ws-or::before,.ws-or::after{content:"";flex:1;height:1px;background:var(--line)}
 .modal-in .btn,.modal-in .tlink{margin-top:0}
 .modal-in>*+*{margin-top:12px}
-.modal-in input{background:var(--bg-raised);border:1px solid var(--line);border-radius:10px;
-  padding:12px 14px;font-size:15px;width:100%}
+.modal-in input{background:var(--bg-raised);border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px;font-size:16px;width:100%}
 .modal-in input:focus{outline:none;border-color:var(--accent)}
 
 .toasts{position:fixed;right:20px;bottom:20px;z-index:200;display:flex;flex-direction:column;gap:10px}
@@ -422,11 +437,11 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
     <nav class="links mono" aria-label="Primary">
       <a href="#notes">Field notes</a>
       <a href="#capabilities">Capabilities</a>
-      <a href="#workspace">Live demo</a>
+      <a href="#" data-goto-app>Live demo</a>
       <a href="#process">Method</a>
       <a href="#access">Access</a>
     </nav>
-    <a class="hd-cta" href="#workspace">Try it with your agent</a>
+    <a class="hd-cta" href="#" data-goto-app>Get started</a>
     <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8h16M4 16h16"/></svg>
     </button>
@@ -443,14 +458,14 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
   <nav>
     <a href="#notes">Field notes <i>01</i></a>
     <a href="#capabilities">Capabilities <i>02</i></a>
-    <a href="#workspace">Live demo <i>03</i></a>
+    <a href="#" data-goto-app>Live demo — get started <i>→</i></a>
     <a href="#process">Method <i>04</i></a>
     <a href="#access">Access <i>05</i></a>
   </nav>
   <div class="menu-foot mono"><span>Strata Systems</span><span>Est. 2025</span></div>
 </div>
 
-<!-- sidebar: workspaces · navigate · preferences · settings · about -->
+<!-- sidebar -->
 <div class="sb-scrim" id="sbScrim" aria-hidden="true"></div>
 <aside class="sb" id="sidebar" aria-label="Strata sidebar" aria-hidden="true">
   <div class="sb-head">
@@ -468,7 +483,7 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
       <nav class="sb-nav">
         <a href="#notes" data-sbnav>01 — Field notes</a>
         <a href="#capabilities" data-sbnav>02 — Capabilities</a>
-        <a href="#workspace" data-sbnav>03 — Live demo</a>
+        <a href="#" data-goto-app>03 — Workspace (get started)</a>
         <a href="#process" data-sbnav>04 — Method</a>
         <a href="#access" data-sbnav>05 — Access</a>
       </nav>
@@ -490,13 +505,14 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
         <button type="button" id="sbClearKeys">Clear saved unlock keys</button>
         <button type="button" id="sbClearHist">Clear workspace history</button>
         <button type="button" id="sbResetDemo">Reset local demo data</button>
+        <button type="button" id="sbShowOb">Show getting-started tour</button>
         <button type="button" id="sbErase" class="danger">Erase all local data…</button>
       </div>
     </div>
     <div class="sb-sec sb-about">
       <h4 class="mono">About</h4>
       <p><b>Strata</b> — a versioned decision ledger. Every spec, decision and release is an append-only layer, signed by a named human, and operable by your AI agent over WebMCP.</p>
-      <p>Built for the WebMCP Challenge · <span id="sbVer">v1.2.1</span> · MIT license.</p>
+      <p>Built for the WebMCP Challenge · <span id="sbVer">v1.4.0</span> · MIT license.</p>
       <p><a href="https://github.com/webmachinelearning/webmcp" target="_blank" rel="noopener">WebMCP specification ↗</a></p>
       <p class="sb-note">No user accounts — privacy is per-workspace: optional passwords, unlock keys stored only in this browser. Server workspaces are shared by link.</p>
     </div>
@@ -505,13 +521,16 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
 
 <main id="top">
 
+  <!-- ============ LANDING ============ -->
+  <div id="viewLanding">
+
   <section class="hero">
     <div class="hero-copy">
       <p class="eyebrow mono rv">Strata — System 01 · WebMCP-enabled</p>
       <h1 class="rv" style="transition-delay:.08s">Everything built<br>is built in <em>layers.</em></h1>
       <p class="hero-sub rv" style="transition-delay:.16s">Strata keeps every spec, decision and prototype as an addressable layer on one shared ledger — stored on a server, synced live across every open window, and exposed to your AI agent over WebMCP. You and your agent work the same truth. Nothing gets overwritten, nothing gets guessed.</p>
       <div class="hero-actions rv" style="transition-delay:.24s">
-        <a class="btn" href="#workspace">Run the live demo
+        <a class="btn" href="#" data-goto-app>Get started — create your workspace
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
         <a class="tlink" href="#notes">Why layers
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
@@ -519,7 +538,7 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
     </div>
     <div class="hero-stage rv" style="transition-delay:.2s" id="stage">
       <div class="stage-labels" id="stageLabels" aria-hidden="true"></div>
-      <p class="stage-note mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v4h-4"/></svg>Fig. 00 — the live ledger · click to dismantle &amp; label · drag to spin</p>
+      <p class="stage-note mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v4h-4"/></svg>Fig. 00 — the system stack · click to dismantle · drag to spin</p>
       <p class="hero-hint mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>Scroll — the stack opens</p>
     </div>
   </section>
@@ -545,7 +564,6 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
     </div>
   </div>
 
-  <!-- 01 · FIELD NOTES -->
   <section class="sec" id="notes">
     <div class="wrap">
       <div class="sec-head rv"><span class="mono">01 — Field notes</span><span class="mono dim">Why layers</span></div>
@@ -656,7 +674,6 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
     </div>
   </section>
 
-  <!-- 02 · CAPABILITIES -->
   <section class="sec" id="capabilities">
     <div class="wrap">
       <div class="sec-head rv"><span class="mono">02 — Capabilities</span><span class="mono dim">Each one is an agent tool too</span></div>
@@ -708,10 +725,68 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
     </figure>
   </section>
 
-  <!-- 03 · LIVE DEMO -->
-  <section class="sec" id="workspace">
+  <section class="sec" id="process">
+    <div class="wrap method">
+      <div class="method-left">
+        <div class="sec-head rv" style="margin-bottom:0"><span class="mono">04 — Method</span></div>
+        <p class="rv" style="transition-delay:.1s;margin-top:24px">Four moves, repeated until the thing ships. Each one writes to the same ledger — for you, for your teammates in other windows, and for your agent.</p>
+      </div>
+      <div class="steps">
+        <div class="step rv"><i>i.</i><div><h3>Capture</h3><p>Record specs, decisions, prototypes. Each becomes a layer with provenance from minute zero — by hand, or narrated to your agent.</p></div></div>
+        <div class="step rv" style="transition-delay:.06s"><i>ii.</i><div><h3>Compose</h3><p>Assemble a stratum: the exact bundle of versions that constitutes this attempt at the truth. One handle, one state, no ambiguity.</p></div></div>
+        <div class="step rv" style="transition-delay:.12s"><i>iii.</i><div><h3>Critique</h3><p>Reviewers sign inside the layer they’re commenting on. Your agent can pre-check that a layer contradicts no earlier decision before a human ever looks.</p></div></div>
+        <div class="step rv" style="transition-delay:.18s"><i>iv.</i><div><h3>Cut</h3><p>When contested layers resolve, cut the release. The agent drafts the notes from the ledger; the ledger seals the record.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="quote">
+    <div class="wrap rv">
+      <blockquote>“List the layers, add a decision layer called ‘Adopt saved cards’, then draft release notes.”</blockquote>
+      <p class="quote-by mono">Paste this into ChatGPT while this page is open — then watch the activity feed.</p>
+    </div>
+  </section>
+
+  <section class="sec access" id="access">
     <div class="wrap">
-      <div class="sec-head rv">
+      <div class="sec-head rv"><span class="mono">05 — Access</span><span class="mono dim">Early preview</span></div>
+      <h2 class="rv">Start your first stratum.</h2>
+      <p class="sub rv" style="transition-delay:.08s">Open the workspace, create a ledger and share the link — everyone who opens it sees the same live ledger. Leave an address and we’ll send an invite to the preview.</p>
+      <form class="form rv" id="accessForm" style="transition-delay:.14s" novalidate>
+        <input type="email" id="accessEmail" placeholder="you@yourteam.com" autocomplete="email" aria-label="Work email">
+        <button class="btn" type="submit">Request invite
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></button>
+      </form>
+      <p class="form-msg mono" id="formMsg" role="status"></p>
+      <p class="fine mono">Free for teams up to five · No card · No countdown</p>
+    </div>
+  </section>
+
+  </div><!-- /viewLanding -->
+
+  <!-- ============ APP ============ -->
+  <div id="viewApp" hidden>
+    <div class="wrap">
+      <div class="app-top">
+        <a class="backlink" href="#" data-goto-landing>← Overview</a>
+        <span class="mono dim">Strata workspace</span>
+      </div>
+
+      <div class="obx" id="obxPanel" hidden>
+        <div class="obx-head">
+          <h4 class="mono" style="margin:0">Getting started — 5 moves</h4>
+          <button class="reset" id="obxSkip" type="button">skip tour</button>
+        </div>
+        <ol id="obxList">
+          <li data-ob="ws"><span class="box">✓</span><span><b>Open a workspace</b> — create one (optionally password-locked) or join with a 6-character code.</span></li>
+          <li data-ob="layer"><span class="box">✓</span><span><b>Add your first layer</b> — a spec, decision, prototype or release, with the big form below-left.</span></li>
+          <li data-ob="sign"><span class="box">✓</span><span><b>Sign one off</b> — type the reviewer’s name on a layer card and approve or reject it.</span></li>
+          <li data-ob="export"><span class="box">✓</span><span><b>Export something</b> — a diagram, release notes, JSON or CSV.</span></li>
+          <li data-ob="agent"><span class="box">✓</span><span><b>Let your agent act</b> — in ChatGPT’s in-app browser or flagged Chrome, paste the prompt from the overview page and watch the feed.</span></li>
+        </ol>
+      </div>
+
+      <div class="sec-head" style="margin-bottom:28px">
         <span class="mono">03 — Live demo · one ledger, two operators</span>
         <span class="pill" id="mcpPill">WebMCP · checking…</span>
       </div>
@@ -754,7 +829,7 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
             <button class="tlink" id="cmpGo" type="button" style="margin-top:12px">Run diff</button>
             <div id="cmpOut" class="cmp-out mono" role="status"></div>
           </div>
-          <p class="ws-note">Open this page in two windows — edits sync live. With WebMCP enabled (ChatGPT’s in-app browser, or Chrome with <span class="mono">chrome://flags/#enable-webmcp-testing</span>), an agent can do all of the above — try: <em>“List the layers, add a decision layer ‘Adopt saved cards’, then draft release notes.”</em></p>
+          <p class="ws-note">Open this page in two windows — edits sync live. With WebMCP enabled (ChatGPT’s in-app browser, or Chrome with <span class="mono">chrome://flags/#enable-webmcp-testing</span>), an agent can do all of the above.</p>
         </div>
         <div class="ws-mid rv">
           <div class="layers" id="layerList"></div>
@@ -765,46 +840,7 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
         </div>
       </div>
     </div>
-  </section>
-
-  <!-- 04 · METHOD -->
-  <section class="sec" id="process">
-    <div class="wrap method">
-      <div class="method-left">
-        <div class="sec-head rv" style="margin-bottom:0"><span class="mono">04 — Method</span></div>
-        <p class="rv" style="transition-delay:.1s;margin-top:24px">Four moves, repeated until the thing ships. Each one writes to the same ledger — for you, for your teammates in other windows, and for your agent.</p>
-      </div>
-      <div class="steps">
-        <div class="step rv"><i>i.</i><div><h3>Capture</h3><p>Record specs, decisions, prototypes. Each becomes a layer with provenance from minute zero — by hand, or narrated to your agent.</p></div></div>
-        <div class="step rv" style="transition-delay:.06s"><i>ii.</i><div><h3>Compose</h3><p>Assemble a stratum: the exact bundle of versions that constitutes this attempt at the truth. One handle, one state, no ambiguity.</p></div></div>
-        <div class="step rv" style="transition-delay:.12s"><i>iii.</i><div><h3>Critique</h3><p>Reviewers sign inside the layer they’re commenting on. Your agent can pre-check that a layer contradicts no earlier decision before a human ever looks.</p></div></div>
-        <div class="step rv" style="transition-delay:.18s"><i>iv.</i><div><h3>Cut</h3><p>When contested layers resolve, cut the release. The agent drafts the notes from the ledger; the ledger seals the record.</p></div></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="quote">
-    <div class="wrap rv">
-      <blockquote>“List the layers, add a decision layer called ‘Adopt saved cards’, then draft release notes.”</blockquote>
-      <p class="quote-by mono">Paste this into ChatGPT while this page is open — then watch the activity feed.</p>
-    </div>
-  </section>
-
-  <!-- 05 · ACCESS -->
-  <section class="sec access" id="access">
-    <div class="wrap">
-      <div class="sec-head rv"><span class="mono">05 — Access</span><span class="mono dim">Early preview</span></div>
-      <h2 class="rv">Start your first stratum.</h2>
-      <p class="sub rv" style="transition-delay:.08s">Create a workspace above and share the link — everyone who opens it sees the same live ledger. Leave an address and we’ll send an invite to the preview.</p>
-      <form class="form rv" id="accessForm" style="transition-delay:.14s" novalidate>
-        <input type="email" id="accessEmail" placeholder="you@yourteam.com" autocomplete="email" aria-label="Work email">
-        <button class="btn" type="submit">Request invite
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></button>
-      </form>
-      <p class="form-msg mono" id="formMsg" role="status"></p>
-      <p class="fine mono">Free for teams up to five · No card · No countdown</p>
-    </div>
-  </section>
+  </div><!-- /viewApp -->
 
 </main>
 
@@ -816,17 +852,17 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
         <p>A versioned workspace where specs, decisions and releases live on one server-persisted ledger — open to humans and their agents through WebMCP.</p>
       </div>
       <div class="ft-col"><h4 class="mono">Index</h4>
-        <a href="#notes">Field notes</a><a href="#capabilities">Capabilities</a><a href="#workspace">Live demo</a><a href="#process">Method</a><a href="#access">Access</a>
+        <a href="#notes">Field notes</a><a href="#capabilities">Capabilities</a><a href="#" data-goto-app>Live demo</a><a href="#process">Method</a><a href="#access">Access</a>
       </div>
       <div class="ft-col"><h4 class="mono">Agent tools</h4>
-        <a href="#workspace">list_layers</a><a href="#workspace">add_layer</a><a href="#workspace">sign_off</a><a href="#workspace">compare_layers</a><a href="#workspace">draft_release_notes</a><a href="#workspace">generate_diagram</a><a href="#workspace">export_workspace</a><a href="#workspace">get_activity</a>
+        <a href="#" data-goto-app>list_layers</a><a href="#" data-goto-app>add_layer</a><a href="#" data-goto-app>sign_off</a><a href="#" data-goto-app>compare_layers</a><a href="#" data-goto-app>draft_release_notes</a><a href="#" data-goto-app>generate_diagram</a><a href="#" data-goto-app>export_workspace</a><a href="#" data-goto-app>get_activity</a>
       </div>
       <div class="ft-col"><h4 class="mono">Elsewhere</h4>
         <a href="#" data-dead>Source on GitHub (MIT)</a><a href="#" data-dead>Changelog</a><a href="#" data-dead>Spec — webmcp</a><a href="#" data-dead>Contact</a>
       </div>
     </div>
     <div class="ft-bottom mono">
-      <span>© 2025 Strata Systems · MIT · <b id="build">v1.2.1</b></span>
+      <span>© 2025 Strata Systems · MIT · <b id="build">v1.4.0</b></span>
       <span>Built for the WebMCP Challenge</span>
       <span>Local time <b id="clock">—:—:—</b></span>
       <a href="#top" class="tlink" style="border:0;padding:0">Back to top ↑</a>
@@ -843,7 +879,7 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
 
 <!-- workspace welcome / switcher -->
 <div class="modal" id="wsModal" hidden>
-  <div class="modal-in" style="max-width:480px">
+  <div class="modal-in" style="max-width:520px">
     <div class="modal-head"><h4 class="mono">Open a workspace</h4><button class="reset" id="wsClose" type="button" aria-label="Close">✕</button></div>
     <input id="wsNameIn" placeholder="New workspace name (e.g. Checkout Revamp)" maxlength="80">
     <input id="wsPassIn" type="password" placeholder="Password (optional — locks this workspace)" maxlength="60" autocomplete="new-password">
@@ -856,7 +892,6 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
   </div>
 </div>
 
-<!-- diagram modal -->
 <div class="modal" id="diagModal" hidden>
   <div class="modal-in" style="max-width:1080px">
     <div class="modal-head"><h4 class="mono">Strata diagram — generated from the ledger</h4><button class="reset" id="diagClose" type="button" aria-label="Close">✕</button></div>
@@ -868,7 +903,6 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
   </div>
 </div>
 
-<!-- release-notes modal -->
 <div class="modal" id="relModal" hidden>
   <div class="modal-in">
     <div class="modal-head"><h4 class="mono">Release notes — markdown</h4><button class="reset" id="relClose" type="button" aria-label="Close">✕</button></div>
@@ -882,17 +916,12 @@ body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
 
 <div class="toasts" id="toasts" aria-live="polite"></div>
 
-<script type="importmap">
-{ "imports": {
-  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-}}
-</script>
-
+<!-- ============================================================
+     SCRIPT 1 of 2 — APP LOGIC (no external imports).
+     Deliberately separate from the 3D script: if the 3D scene
+     fails for any reason, routing/workspace/agent still work.
+     ============================================================ -->
 <script type="module">
-import * as THREE from 'three';
-import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
-
 const $  = (s, c=document) => c.querySelector(s);
 const $$ = (s, c=document) => [...c.querySelectorAll(s)];
 const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
@@ -922,7 +951,7 @@ const ago = ts => { const s = (Date.now()-ts)/1e3;
   if(s < 86400) return Math.floor(s/3600)+'h ago';
   return new Date(ts).toLocaleDateString(); };
 
-/* ================= state + local fallback store ================= */
+/* ================= state + local fallback ================= */
 const state = { ws:null, layers:[], activity:[], mode:'local', serverUp:false };
 
 const localStore = {
@@ -955,11 +984,44 @@ const localStore = {
   resetDemo(){ this.seedDemo(); }
 };
 
-function setState(ws, layers, activity, mode){
-  state.ws = ws; state.layers = layers; state.activity = activity; state.mode = mode;
-  window.dispatchEvent(new CustomEvent('strata:mode', {detail:{mode}}));
-  renderAll();
+/* ================= VIEW ROUTING (landing / app) ================= */
+const viewLanding = $('#viewLanding'), viewApp = $('#viewApp');
+let appVisible = false;
+function showApp(){
+  appVisible = true;
+  viewLanding.hidden = true; viewApp.hidden = false;
+  window.scrollTo(0, 0);
+  if(!state.ws) $('#wsModal').hidden = false;
+  maybeShowOnboarding();
 }
+function showLanding(){
+  appVisible = false;
+  viewApp.hidden = true; viewLanding.hidden = false;
+  window.scrollTo(0, 0);
+}
+function goApp(){
+  if(!location.hash.startsWith('#/app')){
+    try{ history.replaceState(null, '', location.pathname + location.search + '#/app'); }catch(e){}
+  }
+  showApp();
+}
+function goLanding(){
+  if(location.hash.startsWith('#/app')){
+    try{ history.replaceState(null, '', location.pathname + location.search); }catch(e){}
+  }
+  showLanding();
+}
+ $$('[data-goto-app]').forEach(el => el.addEventListener('click', e => {
+  e.preventDefault(); menuToggle(false); goApp();
+}));
+ $$('[data-goto-landing]').forEach(el => el.addEventListener('click', e => {
+  e.preventDefault(); goLanding();
+}));
+addEventListener('hashchange', ()=>{
+  if(location.hash.startsWith('#/app') && !appVisible) showApp();
+});
+
+/* ================= events from mutations ================= */
 function afterMutation(actor, action, detail){
   state.activity.unshift({ts:Date.now(), actor, action, detail});
   state.activity = state.activity.slice(0, 60);
@@ -971,7 +1033,7 @@ function mirrorIfNew(actor, action, detail){
   afterMutation(actor, action, detail);
 }
 
-/* ================= API ops + auth ================= */
+/* ================= API + auth ================= */
 const authKey = {
   get: id => { try{ return localStorage.getItem('strata-key-'+id) || null; }catch(e){ return null; } },
   set: (id,k) => { try{ k ? localStorage.setItem('strata-key-'+id, k) : localStorage.removeItem('strata-key-'+id); }catch(e){} }
@@ -1038,7 +1100,7 @@ function connectStream(id){
       try{
         const d = await apiLoad(id);
         state.layers = d.layers; state.activity = d.activity;
-        renderAll(); syncStack();
+        renderAll();
         toast('<b>Reconnected.</b> Ledger resynced — nothing missed.');
       }catch{}
     }
@@ -1065,9 +1127,10 @@ function connectStream(id){
 /* ================= workspace open / create / join ================= */
 function updateUrl(id){
   if(isFile) return;
-  try{ history.replaceState(null, '', '/w/' + id); }catch{}
+  try{ history.replaceState(null, '', '/w/' + id + (appVisible ? '#/app' : '')); }catch(e){}
 }
 function openServerWs(id){
+  goApp();
   apiLoad(id).then(d => {
     setState(d.ws, d.layers, d.activity, 'server');
     updateUrl(id);
@@ -1089,6 +1152,7 @@ function openServerWs(id){
   });
 }
 function openLocalWs(id, name){
+  goApp();
   setState({id, name}, localStore.data.layers, localStore.data.activity, 'local');
   try{ localStorage.setItem('strata-last-ws', id); }catch(e){}
   addWsHistory(id, name);
@@ -1161,20 +1225,26 @@ function wsIdFromUrl(){
   if(m) return m[1].toUpperCase();
   const q = new URLSearchParams(location.search).get('w');
   if(q && /^[A-Za-z0-9]{6}$/.test(q)) return q.toUpperCase();
-  const h = location.hash.match(/w\/?([A-Za-z0-9]{6})/);
-  if(h) return h[1].toUpperCase();
   return null;
 }
 (async function boot(){
   localStore.load();
   state.serverUp = await pingServer();
-  const id = wsIdFromUrl() || (()=>{ try{ return localStorage.getItem('strata-last-ws'); }catch(e){ return null; } })();
+  const id = wsIdFromUrl();
+  const wantsApp = !!id || location.hash.startsWith('#/app');
+  if(wantsApp) showApp();
   if(id && state.serverUp){ openServerWs(id); }
   else if(id && !state.serverUp){ openLocalWs(id, 'Local workspace'); toast('<b>Server unreachable</b> — running in local mode. Start it with <b>npm start</b>.'); }
-  else{ $('#wsModal').hidden = false; setConn(state.serverUp ? 'server ready' : 'local mode', state.serverUp ? '' : 'warn'); }
+  else if(wantsApp){ setConn(state.serverUp ? 'server ready' : 'local mode', state.serverUp ? '' : 'warn'); }
 })();
 
 /* ================= renders ================= */
+function setState(ws, layers, activity, mode){
+  state.ws = ws; state.layers = layers; state.activity = activity; state.mode = mode;
+  window.dispatchEvent(new CustomEvent('strata:mode', {detail:{mode}}));
+  renderAll();
+  if(ws) obMark('ws');
+}
 function renderWsBar(){
   if(state.ws){
     $('#wsCode').textContent = state.ws.id;
@@ -1190,7 +1260,7 @@ function renderLayers(){
     box.innerHTML = `<div class="empty">
       <p class="mono">0 layers — an empty ledger</p>
       <h4>Every project starts as layer one.</h4>
-      <p>Add your first spec, decision or prototype with the form on the left — or simply tell your agent what happened and watch it land here as a new slab in the stack above.</p>
+      <p>Add your first spec, decision or prototype with the form on the left — or simply tell your agent what happened and watch it land here.</p>
       <p class="mono">Try: “add a decision layer ‘we chose Postgres over Mongo’”</p>
     </div>`;
     return;
@@ -1229,7 +1299,7 @@ function fillCompareSelects(){
 }
 function renderAll(){ renderWsBar(); renderLayers(); fillCompareSelects(); renderFeed(); }
 
-/* ================= find layer (id, number or exact title) ================= */
+/* ================= find layer ================= */
 const findLayer = (ref) => {
   if(ref == null) return null;
   const s = String(ref).trim();
@@ -1240,7 +1310,7 @@ const findLayer = (ref) => {
   return state.layers.find(l => l.title.toLowerCase() === s.toLowerCase()) || null;
 };
 
-/* ================= mutations (mode-aware) ================= */
+/* ================= mutations ================= */
 async function doAddLayer(title, kind, summary, actor){
   if(state.mode === 'server' && state.ws){
     const l = await apiAdd(state.ws.id, title, kind, summary, actor);
@@ -1254,7 +1324,7 @@ async function doAddLayer(title, kind, summary, actor){
     author: actor==='agent' ? 'Agent (WebMCP)' : 'You',
     status:'open', note:'', reviewedBy:null, createdAt:Date.now()};
   d.layers.push(layer); localStore.save();
-  setStateKeepMode();
+  state.layers = localStore.data.layers; state.activity = localStore.data.activity;
   afterMutation(actor, 'layer.added', `${layer.id} · ${layer.title}`);
   return layer;
 }
@@ -1270,10 +1340,10 @@ async function doSignOff(layerId, reviewer, verdict, note, actor){
   if(!l) throw new Error('layer not found');
   l.status = verdict; l.reviewedBy = reviewer; l.note = note || '';
   localStore.save();
+  state.layers = localStore.data.layers; state.activity = localStore.data.activity;
   afterMutation(actor, 'layer.signed', `${l.id} → ${verdict} by ${reviewer}`);
   return l;
 }
-function setStateKeepMode(){ state.layers = localStore.data.layers; state.activity = localStore.data.activity; renderAll(); }
 
  $('#layerForm').addEventListener('submit', async e => {
   e.preventDefault();
@@ -1302,7 +1372,8 @@ function setStateKeepMode(){ state.layers = localStore.data.layers; state.activi
   localStore.resetDemo();
   if(state.ws) localStore.data.id = state.ws.id;
   localStore.save();
-  setStateKeepMode();
+  state.layers = localStore.data.layers; state.activity = localStore.data.activity;
+  renderAll();
   toast('<b>Demo reset.</b> Fresh seed data loaded.');
 });
 
@@ -1348,7 +1419,7 @@ function showReleaseNotes(md){
   $('#relPre').textContent = md;
   $('#relModal').hidden = false;
 }
- $('#btnReleaseMd').addEventListener('click', ()=> showReleaseNotes(buildReleaseNotes()));
+ $('#btnReleaseMd').addEventListener('click', ()=>{ showReleaseNotes(buildReleaseNotes()); obMark('export'); });
  $('#relClose').addEventListener('click', ()=> $('#relModal').hidden = true);
  $('#relModal').addEventListener('click', e => { if(e.target === $('#relModal')) $('#relModal').hidden = true; });
  $('#relCopy').addEventListener('click', ()=>{
@@ -1362,7 +1433,7 @@ function showReleaseNotes(md){
   toast('<b>Downloaded.</b> Check your Downloads folder.');
 });
 
-/* ================= exports json / csv ================= */
+/* ================= exports ================= */
 function localJson(){
   return JSON.stringify({exportedAt:new Date().toISOString(),
     workspace:{id:state.ws?.id, name:state.ws?.name},
@@ -1393,6 +1464,7 @@ async function exportJson(){
   const id = state.ws.id;
   if(state.mode === 'server') await serverExport('export.json', id + '-ledger.json', 'application/json');
   else download(id + '-ledger.json', localJson(), 'application/json');
+  obMark('export');
   toast('<b>JSON export</b> — full ledger + activity.');
 }
 async function exportCsv(){
@@ -1400,6 +1472,7 @@ async function exportCsv(){
   const id = state.ws.id;
   if(state.mode === 'server') await serverExport('export.csv', id + '-layers.csv', 'text/csv');
   else download(id + '-layers.csv', localCsv(), 'text/csv');
+  obMark('export');
   toast('<b>CSV export</b> — opens in any spreadsheet.');
 }
  $('#btnJson').addEventListener('click', exportJson);
@@ -1445,6 +1518,7 @@ function showDiagram(){
   if(!state.ws){ toast('<b>Open a workspace first.</b>'); return; }
   $('#diagBox').innerHTML = buildDiagramSVG();
   $('#diagModal').hidden = false;
+  obMark('export');
 }
  $('#btnDiagram').addEventListener('click', showDiagram);
  $('#diagClose').addEventListener('click', ()=> $('#diagModal').hidden = true);
@@ -1487,7 +1561,7 @@ addEventListener('keydown', e => {
   }
 });
 
-/* ================= chrome (theme/menu/cursor/etc) ================= */
+/* ================= chrome (theme/menu/cursor) ================= */
 const themeBtns = $$('.lab button');
 function setTheme(name, announce){
   document.documentElement.dataset.theme = name;
@@ -1601,13 +1675,46 @@ if(fine && !reduced){
   $('#stage').addEventListener('mouseleave', shrink);
 }
 
-/* ================= sidebar (workspaces · prefs · settings) ================= */
+/* ================= onboarding ================= */
+const OB_KEY = 'strata-onboarded';
+const obState = { ws:false, layer:false, sign:false, export:false, agent:false };
+function obDone(){ try{ return localStorage.getItem(OB_KEY) === '1'; }catch{ return false; } }
+function obRender(){
+  $$('#obxList li').forEach(li => li.classList.toggle('done', !!obState[li.dataset.ob]));
+}
+function obMark(k){
+  if(!obState[k]){
+    obState[k] = true; obRender();
+    if(Object.values(obState).every(Boolean) && !obDone()){
+      try{ localStorage.setItem(OB_KEY, '1'); }catch(e){}
+      toast('<b>Tour complete.</b> You know every move now — the checklist steps aside.');
+      setTimeout(()=>{ const p = $('#obxPanel'); if(p) p.hidden = true; }, 1200);
+    }
+  }
+}
+function maybeShowOnboarding(){
+  if(!obDone()){ const p = $('#obxPanel'); if(p){ p.hidden = false; obRender(); } }
+}
+ $('#obxSkip').addEventListener('click', ()=>{
+  try{ localStorage.setItem(OB_KEY, '1'); }catch(e){}
+  $('#obxPanel').hidden = true;
+});
+document.addEventListener('strata:changed', e => {
+  if(e.detail.action === 'layer.added') obMark('layer');
+  if(e.detail.action === 'layer.signed') obMark('sign');
+  if(e.detail.actor === 'agent'){
+    obMark('agent');
+    toast(`<b>Agent acted:</b> ${e.detail.action} — check the activity feed.`);
+  }
+});
+
+/* ================= sidebar ================= */
 const SB_HIST_KEY = 'strata-ws-history';
 function wsHistory(){
-  try{ return JSON.parse(localStorage.getItem(SB_HIST_KEY)) || []; }catch{ return []; }
+  try{ return JSON.parse(localStorage.getItem(SB_HIST_KEY)) || []; }catch(e){ return []; }
 }
 function wsHistorySave(list){
-  try{ localStorage.setItem(SB_HIST_KEY, JSON.stringify(list.slice(0, 12))); }catch{}
+  try{ localStorage.setItem(SB_HIST_KEY, JSON.stringify(list.slice(0, 12))); }catch(e){}
 }
 function addWsHistory(id, name){
   if(!id) return;
@@ -1657,7 +1764,7 @@ function sidebarToggle(open){
   else toast('<b>Server unreachable.</b> Start it with <b>npm start</b>, then reopen this workspace.');
 });
  $$('[data-sbnav]').forEach(a => a.addEventListener('click', ()=> sidebarToggle(false)));
- $('#sbNewWs').addEventListener('click', ()=>{ sidebarToggle(false); $('#wsModal').hidden = false; });
+ $('#sbNewWs').addEventListener('click', ()=>{ sidebarToggle(false); goApp(); $('#wsModal').hidden = false; });
  $('#sbCopyLink2').addEventListener('click', ()=>{
   if(!state.ws){ toast('<b>No workspace open.</b>'); return; }
   navigator.clipboard?.writeText(location.href)
@@ -1672,7 +1779,7 @@ function sidebarToggle(open){
       if(k && k.startsWith('strata-key-')) removed.push(k);
     }
     removed.forEach(k => localStorage.removeItem(k));
-  }catch{}
+  }catch(e){}
   toast(removed.length
     ? `<b>Cleared ${removed.length} unlock key${removed.length === 1 ? '' : 's'}.</b> Locked workspaces will ask for their password again.`
     : '<b>No saved keys found.</b>');
@@ -1682,232 +1789,25 @@ function sidebarToggle(open){
   toast('<b>Workspace history cleared.</b>');
 });
  $('#sbResetDemo').addEventListener('click', ()=> $('#resetDemo').click());
+ $('#sbShowOb').addEventListener('click', ()=>{
+  try{ localStorage.removeItem(OB_KEY); }catch(e){}
+  Object.keys(obState).forEach(k => obState[k] = false);
+  goApp(); maybeShowOnboarding(); obRender();
+});
  $('#sbErase').addEventListener('click', ()=>{
   if(!confirm('Erase ALL local Strata data — theme, history, saved unlock keys and the local fallback ledger?\n\nServer workspaces are NOT affected (they live in the database).')){
     return;
   }
   try{
     Object.keys(localStorage).filter(k => k.startsWith('strata-')).forEach(k => localStorage.removeItem(k));
-  }catch{}
+  }catch(e){}
   location.reload();
 });
-try{ $('#sbVer').textContent = $('#build').textContent; }catch{}
-
-/* ================= 3D — the stack mirrors the ledger =================
-   Foundation slab = the append-only ledger. Hover spreads; CLICK pins
-   a labelled dismantle with camera zoom-in; click again reassembles.
-   Slabs stagger/taper like the logo bars. Drag = rotate + tilt.      */
-const wrap = $('#stage');
-const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-wrap.appendChild(renderer.domElement);
-
-const scene  = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(30, 1, .1, 100);
-camera.position.set(4.4, 1.7, 7.0);
-camera.lookAt(0, .1, 0);
-
-scene.add(new THREE.HemisphereLight(0xffffff, 0x777264, .75));
-const key = new THREE.DirectionalLight(0xfff4e6, 1.35);
-key.position.set(5, 9, 4); key.castShadow = true;
-key.shadow.mapSize.set(1024, 1024);
-Object.assign(key.shadow.camera, {left:-5, right:5, top:5, bottom:-5, near:1, far:24});
-scene.add(key);
-const rim = new THREE.DirectionalLight(0xdfe8ff, .5);
-rim.position.set(-6, 3, -5); scene.add(rim);
-
-const floor = new THREE.Mesh(new THREE.CircleGeometry(4.4, 48),
-  new THREE.ShadowMaterial({opacity:.16}));
-floor.rotation.x = -Math.PI/2; floor.position.y = -2.5;
-floor.receiveShadow = true; scene.add(floor);
-
-const GEO = new RoundedBoxGeometry(2.7, .32, 1.7, 4, .09);
-const BASE_GEO = new RoundedBoxGeometry(3.15, .24, 2.05, 4, .09);
-const mats = [0,1,2,3,4].map(()=> new THREE.MeshStandardMaterial({roughness:.55, metalness:.06}));
-const KIND_MAT = {spec:1, decision:2, prototype:0, release:3};
-const THEME_3D = {
-  atelier:    ['#241E17', '#DCD2BF', '#BC4B1F', '#8A7F6C', '#3A322A'],
-  signal:     ['#E8E5DC', '#33372F', '#FF5A1F', '#6B7166', '#4A4E44'],
-  greenhouse: ['#E9E2D0', '#28402F', '#C9A227', '#5E7263', '#50411F']
-};
-function applyTheme3D(name){
-  (THEME_3D[name] || THEME_3D.atelier).forEach((hex, i) => mats[i].color.set(hex));
-  floor.material.opacity = name === 'atelier' ? .16 : .3;
-}
-applyTheme3D(document.documentElement.dataset.theme || 'atelier');
-addEventListener('strata:theme', e => applyTheme3D(e.detail.name));
-
-const group = new THREE.Group(); scene.add(group);
-const slabs = [];
-const foundation = new THREE.Mesh(BASE_GEO, mats[4]);
-foundation.castShadow = true;
-group.add(foundation);
-const clock = new THREE.Clock();
-
-/* ---- labels (HTML overlay, projected each frame) ---- */
-const labelsBox = $('#stageLabels');
-const foundLabel = document.createElement('div');
-foundLabel.className = 'slab-label found';
-foundLabel.innerHTML = '<b>DB</b> append-only ledger — the foundation';
-labelsBox.appendChild(foundLabel);
-let labelEls = [];
-const V = new THREE.Vector3();
-function placeLabel(el, obj){
-  obj.getWorldPosition(V); V.project(camera);
-  if(V.z > 1) return false;
-  const w = wrap.clientWidth, h = wrap.clientHeight;
-  el.style.transform = `translate(${(V.x*.5+.5)*w}px, ${(-V.y*.5+.5)*h}px) translate(-50%,-150%)`;
-  return true;
-}
-
-function syncStack(){
-  const target = Math.min(Math.max(state.layers.length, 1), 12);
-  while(slabs.length < target){
-    const m = new THREE.Mesh(GEO, mats[1]);
-    m.castShadow = true;
-    m.userData.spawn = reduced ? 1 : 0;
-    group.add(m); slabs.push(m);
-  }
-  while(slabs.length > target){ group.remove(slabs.pop()); }
-  const view = state.layers.slice(-target);
-  slabs.forEach((s, i) => { if(view[i]) s.material = mats[KIND_MAT[view[i].kind]] ?? mats[1]; });
-  labelEls.forEach(el => el.remove()); labelEls = [];
-  slabs.forEach((s, i) => {
-    const l = view[i];
-    const el = document.createElement('div');
-    el.className = 'slab-label';
-    el.innerHTML = l
-      ? `<b>${l.id}</b> ${l.kind} — ${String(l.title).replace(/</g,'&lt;').slice(0,34)}`
-      : '<b>—</b>';
-    labelsBox.appendChild(el); labelEls.push(el);
-  });
-}
-document.addEventListener('strata:changed', e => {
-  syncStack();
-  if(e.detail.actor === 'agent')
-    toast(`<b>Agent acted:</b> ${e.detail.action} — check the activity feed.`);
-});
-syncStack();
-
-let spinAngle = -.4, spinVel = 0, dragging = false, lastX = 0, lastY = 0, tiltAngle = 0;
-let mNX = 0, mNY = 0, spread = 0, intro = 0, visible = true;
-let hoverT = 0, hoverTarget = 0;
-let pinT = 0, pinned = false;
-
-let pdX = 0, pdY = 0, pdT = 0;
-wrap.addEventListener('pointerdown', e => {
-  dragging = true; pdX = e.clientX; pdY = e.clientY; pdT = performance.now();
-  lastX = e.clientX; lastY = e.clientY;
-  wrap.setPointerCapture(e.pointerId);
-});
-wrap.addEventListener('pointermove', e => {
-  if(!dragging) return;
-  const dx = e.clientX - lastX, dy = e.clientY - lastY;
-  lastX = e.clientX; lastY = e.clientY;
-  spinVel = dx * .0045; spinAngle += dx * .0045;
-  tiltAngle = Math.max(-.5, Math.min(.7, tiltAngle + dy * .003));
-});
-addEventListener('pointerup', e => {
-  if(dragging && pdT &&
-     Math.hypot(e.clientX - pdX, e.clientY - pdY) < 8 &&
-     performance.now() - pdT < 400){
-    pinned = !pinned;
-    toast(pinned
-      ? '<b>Dismantled.</b> Every layer labelled — click again to assemble.'
-      : '<b>Assembled.</b> One stack, one truth.');
-  }
-  pdT = 0; dragging = false;
-});
-if(fine && !reduced){
-  wrap.addEventListener('mouseenter', ()=> hoverTarget = 1);
-  wrap.addEventListener('mouseleave', ()=>{ hoverTarget = 0; dragging = false; });
-}
-addEventListener('mousemove', e => {
-  mNX = (e.clientX / innerWidth - .5) * 2;
-  mNY = (e.clientY / innerHeight - .5) * 2;
-}, {passive:true});
-
-new IntersectionObserver(([e]) => visible = e.isIntersecting, {threshold:.02}).observe(wrap);
-
-function resize(){
-  const w = wrap.clientWidth, h = wrap.clientHeight;
-  renderer.setSize(w, h);
-  camera.aspect = w / h;
-  camera.updateProjectionMatrix();
-}
-new ResizeObserver(resize).observe(wrap);
-resize();
-
-const easeOut = t => 1 - Math.pow(1 - t, 3);
-(function frame(){
-  requestAnimationFrame(frame);
-  const dt = Math.min(clock.getDelta(), .05);
-  if(!visible || document.hidden) return;
-
-  intro = Math.min(1, intro + dt / 1.6);
-  const e = easeOut(intro);
-  hoverT += (hoverTarget - hoverT) * .07;
-  pinT  += ((pinned ? 1 : 0) - pinT) * .08;
-  const ex = Math.max(hoverT, pinT);
-
-  const p = Math.max(0, Math.min(1, scrollY / (innerHeight * .9)));
-  spread += ((p * .55) * e - spread) * .08;
-
-  const t = clock.elapsedTime, N = slabs.length;
-  const gap = .62 * (1 + (reduced ? 0 : .9) * spread + (1 - e) * 1.6 + ex * 1.35);
-  const drift = ex * .6;
-
-  slabs.forEach((s, i) => {
-    if(s.userData.spawn < 1) s.userData.spawn = Math.min(1, s.userData.spawn + dt / .6);
-    const spawnS = .2 + .8 * easeOut(s.userData.spawn);
-    const off = i - (N - 1) / 2;
-    const base = (.6 + .4 * e) * spawnS;
-    const taper = 1 - Math.abs(off) * .035;          // logo-like taper toward top
-    s.position.y = off * gap + (reduced ? 0 : Math.sin(t * 1.1 + i * .7) * .05);
-    s.position.x = off * drift * .5 + (i % 2 ? 1 : -1) * .10 * (1 - ex); // staggered like the logo bars
-    s.position.z = off * drift * .3;
-    s.rotation.y = off * (.16 + spread * .45) + ex * .35 * (i % 2 ? 1 : -1);
-    s.scale.set(base * taper, base, base * (1 - Math.abs(off) * .02));
-  });
-
-  foundation.position.y = -((N - 1) / 2) * gap - .52;
-  foundation.scale.setScalar(.6 + .4 * e);
-
-  // camera zooms in while pinned/dismantled
-  const cz = 7.0 - 1.2 * pinT - .25 * hoverT;
-  camera.position.z += (cz - camera.position.z) * .07;
-  camera.lookAt(0, .1, 0);
-
-  // labels fade in with dismantle
-  const la = Math.max(0, Math.min(1, (ex - .5) / .5));
-  const laa = la * la;
-  if(laa > .01){
-    labelEls.forEach((el, i) => {
-      el.style.opacity = placeLabel(el, slabs[i]) ? laa : 0;
-    });
-    foundLabel.style.opacity = placeLabel(foundLabel, foundation) ? laa : 0;
-  }else{
-    labelEls.forEach(el => el.style.opacity = 0);
-    foundLabel.style.opacity = 0;
-  }
-
-  if(!dragging){
-    spinVel *= Math.exp(-2.2 * dt);
-    tiltAngle *= Math.exp(-.5 * dt);
-  }
-  if(!reduced) spinAngle += spinVel + (dragging ? 0 : .096 * dt);
-  group.rotation.y += (spinAngle + mNX * .1 - group.rotation.y) * .1;
-  group.rotation.x += ((.14 + mNY * .06 - spread * .12 + tiltAngle) - group.rotation.x) * .06;
-
-  renderer.render(scene, camera);
-})();
+try{ $('#sbVer').textContent = $('#build').textContent; }catch(e){}
 
 /* ================================================================
    WEBMCP INTEGRATION — required surface: document.modelContext.registerTool
-   10 tools over the live ledger. Server-backed when the API is up;
-   local fallback keeps them working offline. Feature-detected.
+   10 tools over the live ledger. Feature-detected.
    ================================================================ */
 const mcpTools = [
   { name:'list_layers',
@@ -2015,13 +1915,15 @@ const mcpTools = [
         .map(a => ({time:new Date(a.ts).toISOString(), actor:a.actor, action:a.action, detail:a.detail}))}) },
 
   { name:'navigate',
-    description:'Scroll the page to a named section.',
+    description:'Open the app workspace view, or scroll the overview page to a named section.',
     inputSchema:{type:'object',
-      properties:{ section:{enum:['notes','capabilities','workspace','process','access']} },
+      properties:{ section:{enum:['app','notes','capabilities','workspace','process','access']} },
       required:['section']},
     execute: async ({section}) => {
+      if(section === 'app' || section === 'workspace'){ goApp(); return 'opened workspace view'; }
       const el = document.getElementById(section);
       if(!el) return `section ${section} not found`;
+      goLanding();
       el.scrollIntoView({behavior:'smooth'});
       return `navigated to ${section}`; } },
 
@@ -2058,6 +1960,256 @@ const mcpTools = [
   console.info(`[Strata] ${ok}/${mcpTools.length} WebMCP tools registered. Inspect via Chrome DevTools (WebMCP tool debugging).`);
   toast(`<b>WebMCP active.</b> ${ok} agent tools registered on this page.`);
 })();
+</script>
+
+<!-- ============================================================
+     SCRIPT 2 of 2 — THE 3D SYSTEM STACK (landing hero only).
+     Fully self-contained: 10 illustrated layers + foundation.
+     Click the stack → staggered dismantle + labels + zoom.
+     Click again → reassemble. Drag to spin/tilt. If this script
+     fails, Script 1 (the app) is unaffected.
+     ============================================================ -->
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+const wrap = document.getElementById('stage');
+if(wrap){
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
+  const labelsBox = document.getElementById('stageLabels');
+
+  const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  wrap.appendChild(renderer.domElement);
+
+  const scene  = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(30, 1, .1, 100);
+  camera.position.set(4.4, 1.7, 7.0);
+  camera.lookAt(0, .1, 0);
+
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x777264, .75));
+  const key = new THREE.DirectionalLight(0xfff4e6, 1.35);
+  key.position.set(5, 9, 4); key.castShadow = true;
+  key.shadow.mapSize.set(1024, 1024);
+  Object.assign(key.shadow.camera, {left:-6, right:6, top:6, bottom:-6, near:1, far:30});
+  scene.add(key);
+  const rim = new THREE.DirectionalLight(0xdfe8ff, .5);
+  rim.position.set(-6, 3, -5); scene.add(rim);
+
+  const floor = new THREE.Mesh(new THREE.CircleGeometry(4.6, 48),
+    new THREE.ShadowMaterial({opacity:.16}));
+  floor.rotation.x = -Math.PI/2; floor.position.y = -3.2;
+  floor.receiveShadow = true; scene.add(floor);
+
+  /* materials: 0 prototype · 1 spec · 2 decision · 3 release · 4 foundation */
+  const mats = [0,1,2,3,4].map(()=> new THREE.MeshStandardMaterial({roughness:.55, metalness:.06}));
+  const THEME_3D = {
+    atelier:    ['#8A7F6C', '#DCD2BF', '#BC4B1F', '#241E17', '#3A322A'],
+    signal:     ['#6B7166', '#33372F', '#FF5A1F', '#E8E5DC', '#4A4E44'],
+    greenhouse: ['#5E7263', '#28402F', '#C9A227', '#E9E2D0', '#50411F']
+  };
+  function applyTheme3D(name){
+    (THEME_3D[name] || THEME_3D.atelier).forEach((hex, i) => mats[i].color.set(hex));
+    floor.material.opacity = name === 'atelier' ? .16 : .3;
+  }
+  applyTheme3D(document.documentElement.dataset.theme || 'atelier');
+  addEventListener('strata:theme', e => applyTheme3D(e.detail.name));
+
+  const KIND_MAT = {spec:1, decision:2, prototype:0, release:3};
+  const SHOWCASE = [
+    {id:'L-01', kind:'spec',      title:'Product brief — why layers'},
+    {id:'L-02', kind:'decision',  title:'Adopt the decision ledger'},
+    {id:'L-03', kind:'spec',      title:'Auth & workspace keys'},
+    {id:'L-04', kind:'prototype', title:'Onboarding flow'},
+    {id:'L-05', kind:'decision',  title:'SQLite first, Postgres later'},
+    {id:'L-06', kind:'spec',      title:'WebMCP tool contracts'},
+    {id:'L-07', kind:'prototype', title:'Live sync over SSE'},
+    {id:'L-08', kind:'decision',  title:'Sign-off governance'},
+    {id:'L-09', kind:'release',   title:'v1.0 — internal dogfood'},
+    {id:'L-10', kind:'spec',      title:'Roadmap — 0.2'}
+  ];
+  const N = SHOWCASE.length;
+
+  const GEO = new RoundedBoxGeometry(2.7, .3, 1.7, 4, .09);
+  const BASE_GEO = new RoundedBoxGeometry(3.2, .24, 2.1, 4, .09);
+  const group = new THREE.Group(); scene.add(group);
+
+  const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const V = new THREE.Vector3();
+  const labels = [];
+  const labelEls = [];
+  function placeLabel(el, obj){
+    obj.getWorldPosition(V); V.project(camera);
+    if(V.z > 1) return false;
+    const w = wrap.clientWidth, h = wrap.clientHeight;
+    el.style.transform = `translate(${(V.x*.5+.5)*w}px, ${(-V.y*.5+.5)*h}px) translate(-50%,-160%)`;
+    return true;
+  }
+
+  const slabs = SHOWCASE.map((L, i) => {
+    const m = new THREE.Mesh(GEO, mats[KIND_MAT[L.kind]]);
+    m.castShadow = true;
+    group.add(m);
+    const el = document.createElement('div');
+    el.className = 'slab-label';
+    el.innerHTML = `<b>${esc(L.id)}</b> ${esc(L.kind)} — ${esc(L.title)}`;
+    labelsBox.appendChild(el);
+    labels.push(el); labelEls.push(el);
+    return m;
+  });
+  const foundation = new THREE.Mesh(BASE_GEO, mats[4]);
+  foundation.castShadow = true;
+  group.add(foundation);
+  const foundLabel = document.createElement('div');
+  foundLabel.className = 'slab-label found';
+  foundLabel.innerHTML = '<b>DB</b> append-only ledger — the foundation';
+  labelsBox.appendChild(foundLabel);
+
+  /* home (stacked) + scattered (exploded) poses */
+  const HOME = slabs.map((s, i) => {
+    const off = i - (N - 1) / 2;
+    return { x:(i % 2 ? 1 : -1) * .08, y: off * .62, z: 0, ry: off * .14 };
+  });
+  const SCAT = slabs.map((s, i) => {
+    const side = i % 2 ? 1 : -1;
+    return {
+      x: side * (1.5 + Math.sin(i * 2.3) * .7),
+      y: (i - (N - 1) / 2) * .92 + (i % 2 ? .4 : -.35),
+      z: -side * (1.1 + Math.cos(i * 1.7) * .55),
+      ry: side * (.7 + (i / (N - 1)) * .5),
+      rx: side * .18
+    };
+  });
+
+  const clock = new THREE.Clock();
+  const EX_DUR = 1.2, STAG = .05;
+  const easeInOut = t => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+  let exOn = false, exT0 = -99;
+  function toggleExplode(){
+    exOn = !exOn;
+    exT0 = clock.elapsedTime;
+  }
+
+  /* tap = toggle · drag = rotate (tap = tiny movement, short press) */
+  let dragging = false, lastX = 0, lastY = 0, spinVel = 0;
+  let spinAngle = -.4, tiltAngle = 0;
+  let downX = 0, downY = 0, downT = 0, moved = false;
+  wrap.addEventListener('pointerdown', e => {
+    dragging = true; moved = false;
+    downX = lastX = e.clientX; downY = lastY = e.clientY; downT = performance.now();
+    wrap.setPointerCapture(e.pointerId);
+  });
+  wrap.addEventListener('pointermove', e => {
+    if(!dragging) return;
+    const dx = e.clientX - lastX, dy = e.clientY - lastY;
+    lastX = e.clientX; lastY = e.clientY;
+    if(Math.hypot(e.clientX - downX, e.clientY - downY) > 8) moved = true;
+    spinVel = dx * .0045; spinAngle += dx * .0045;
+    tiltAngle = Math.max(-.5, Math.min(.7, tiltAngle + dy * .003));
+  });
+  addEventListener('pointerup', e => {
+    if(dragging && !moved && performance.now() - downT < 500) toggleExplode();
+    dragging = false;
+  });
+  let hoverT = 0, hoverIn = false;
+  if(fine && !reduced){
+    wrap.addEventListener('mouseenter', ()=> hoverIn = true);
+    wrap.addEventListener('mouseleave', ()=>{ hoverIn = false; dragging = false; });
+  }
+  let mNX = 0, mNY = 0;
+  addEventListener('mousemove', e => {
+    mNX = (e.clientX / innerWidth - .5) * 2;
+    mNY = (e.clientY / innerHeight - .5) * 2;
+  }, {passive:true});
+
+  let visible = true;
+  new IntersectionObserver(([e]) => visible = e.isIntersecting, {threshold:.02}).observe(wrap);
+  function resize(){
+    const w = wrap.clientWidth, h = wrap.clientHeight;
+    renderer.setSize(w, h);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(wrap);
+  resize();
+
+  let intro = 0;
+  (function frame(){
+    requestAnimationFrame(frame);
+    const dt = Math.min(clock.getDelta(), .05);
+    if(!visible || document.hidden) return;
+
+    intro = Math.min(1, intro + dt / 1.6);
+    const introE = 1 - Math.pow(1 - intro, 3);
+    hoverT += ((hoverIn ? 1 : 0) - hoverT) * .07;
+
+    const t = clock.elapsedTime;
+    const scrollP = Math.max(0, Math.min(1, scrollY / (innerHeight * .9)));
+
+    let exSum = 0;
+    slabs.forEach((s, i) => {
+      const delay = exOn ? i * STAG : (N - 1 - i) * STAG;
+      const raw = Math.max(0, Math.min(1, (t - exT0 - delay) / EX_DUR));
+      const ex = exOn ? easeInOut(raw) : 1 - easeInOut(raw);
+      exSum += ex;
+      const off = i - (N - 1) / 2;
+      const H = HOME[i], S = SCAT[i];
+
+      const gapHome = .62 * (1 + (reduced ? 0 : .8) * scrollP + hoverT * .55 + (1 - introE) * 1.5);
+      const hx = H.x + off * hoverT * .1;
+      const hy = off * gapHome + (reduced ? 0 : Math.sin(t * 1.1 + i * .7) * .05);
+
+      s.position.set(
+        hx + (S.x - hx) * ex,
+        hy + (S.y - hy) * ex,
+        (H.z || 0) + (S.z - (H.z || 0)) * ex
+      );
+      s.rotation.y = H.ry + (S.ry - H.ry) * ex;
+      s.rotation.x = (S.rx || 0) * ex;
+
+      const base = (.6 + .4 * introE);
+      s.scale.set(base, base, base);
+    });
+    const avgEx = exSum / N;
+
+    foundation.position.y = -((N - 1) / 2) * .62 - .5 - avgEx * 1.4;
+    foundation.scale.setScalar(.6 + .4 * introE);
+
+    const cz = 7.0 - 1.6 * avgEx;
+    camera.position.z += (cz - camera.position.z) * .07;
+    camera.lookAt(0, .1 + avgEx * .2, 0);
+
+    const laa = avgEx * avgEx;
+    if(laa > .02){
+      labelEls.forEach((el, i) => {
+        el.style.opacity = placeLabel(el, slabs[i]) ? laa : 0;
+      });
+      foundLabel.style.opacity = placeLabel(foundLabel, foundation) ? laa : 0;
+    }else{
+      labelEls.forEach(el => el.style.opacity = 0);
+      foundLabel.style.opacity = 0;
+    }
+
+    if(!dragging){
+      spinVel *= Math.exp(-2.2 * dt);
+      tiltAngle *= Math.exp(-.5 * dt);
+    }
+    if(!reduced) spinAngle += spinVel + (dragging ? 0 : .096 * dt);
+    group.rotation.y += (spinAngle + mNX * .1 - group.rotation.y) * .1;
+    group.rotation.x += ((.14 + mNY * .06 - scrollP * .1 + tiltAngle) - group.rotation.x) * .06;
+
+    renderer.render(scene, camera);
+  })();
+}
 </script>
 </body>
 </html>
