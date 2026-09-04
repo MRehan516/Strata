@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Strata — the versioned workspace your agent can actually use</title>
+<meta name="description" content="Strata — a versioned decision ledger for humans and their AI agents. 10 WebMCP tools over one append-only record. Node · SQLite · SSE live sync · 5 export formats.">
+<meta property="og:title" content="Strata — one ledger, two operators">
+<meta property="og:description" content="Every spec, decision and release as an append-only layer — signed by a named human, operable by your AI agent over WebMCP.">
+<meta property="og:type" content="website">
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="3.4" rx="1.4" fill="%23BC4B1F"/><rect x="7" y="10.2" width="13" height="3.4" rx="1.4" fill="%231C1814"/><rect x="4.8" y="16.4" width="10.5" height="3.4" rx="1.4" fill="%231C1814"/></svg>'>
 
 <script>try{var t=localStorage.getItem('strata-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
@@ -110,6 +114,14 @@ h1 em{font-style:italic;font-weight:480;color:var(--accent)}
 .tlink:hover svg{transform:translate(3px,-3px)}
 .hero-stage{position:relative;height:min(76vh,700px);min-height:440px;user-select:none}
 .hero-stage canvas{position:absolute;inset:0;width:100%!important;height:100%!important;touch-action:pan-y}
+.stage-labels{position:absolute;inset:0;z-index:2;pointer-events:none}
+.stage-labels .slab-label{position:absolute;top:0;left:0;transform:translate(-50%,-150%);
+  background:var(--ink);color:var(--bg);border-radius:8px;padding:5px 9px;
+  font:500 10.5px/1.35 var(--font-mono);letter-spacing:.06em;white-space:nowrap;
+  opacity:0;will-change:transform,opacity}
+.stage-labels .slab-label b{color:var(--accent);font-weight:600;letter-spacing:.12em}
+.stage-labels .slab-label.found{background:var(--bg-raised);color:var(--ink);border:1px solid var(--line)}
+.stage-labels .slab-label.found b{color:var(--accent)}
 .stage-note{position:absolute;top:6px;right:0;display:flex;align-items:center;gap:8px;color:var(--ink-soft)}
 .stage-note svg{width:15px;height:15px}
 .hero-hint{position:absolute;bottom:-6px;left:0;display:flex;align-items:center;gap:10px;color:var(--ink-soft)}
@@ -143,6 +155,9 @@ h1 em{font-style:italic;font-weight:480;color:var(--accent)}
 .figs figure:nth-child(2){align-self:flex-end;width:82%}
 .figs img{width:100%;filter:grayscale(1) sepia(.14) contrast(1.04);transition:filter .5s}
 .figs figure:hover img{filter:none}
+.figs .figsvg{width:100%;height:auto;display:block;
+  filter:grayscale(1) sepia(.14) contrast(1.04);transition:filter .5s}
+.figs figure:hover .figsvg{filter:none}
 .figs figcaption{margin-top:10px;color:var(--ink-soft)}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;margin-top:clamp(64px,8vw,110px)}
 .stat{border-top:1px solid var(--line);padding-top:18px}
@@ -287,6 +302,49 @@ footer{border-top:1px solid var(--ink);padding:clamp(56px,7vw,90px) 0 34px}
 .lab .i-b{background:linear-gradient(90deg,#121412 50%,#FF5A1F 50%);border:1px solid #333}
 .lab .i-c{background:linear-gradient(90deg,#15251C 50%,#C9A227 50%);border:1px solid #3a5445}
 
+/* ---- sidebar ---- */
+.sb{position:fixed;top:0;bottom:0;left:0;z-index:170;width:min(330px,88vw);
+  background:var(--bg);border-right:1px solid var(--line);
+  transform:translateX(-103%);transition:transform .5s var(--ease);
+  display:flex;flex-direction:column;overflow:hidden}
+body.sb-open .sb{transform:none}
+.sb-scrim{position:fixed;inset:0;z-index:165;background:rgba(0,0,0,.35);backdrop-filter:blur(2px);
+  opacity:0;pointer-events:none;transition:opacity .4s}
+body.sb-open .sb-scrim{opacity:1;pointer-events:auto}
+.sb-head{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:18px 20px;border-bottom:1px solid var(--line)}
+.sb-body{flex:1;overflow-y:auto;padding:20px}
+.sb-sec{margin-bottom:28px}
+.sb-sec>h4{margin-bottom:10px}
+.sb-ws{display:flex;flex-direction:column;gap:6px}
+.sb-ws button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;
+  border:1px solid var(--line);border-radius:10px;padding:10px 12px;text-align:left;
+  transition:background .2s,border-color .2s;width:100%;font-size:14px}
+.sb-ws button:hover{background:var(--bg-raised);border-color:var(--ink-soft)}
+.sb-ws button .code{color:var(--accent);font-weight:600}
+.sb-ws button small{color:var(--ink-soft);font-size:11.5px}
+.sb-nav{display:flex;flex-direction:column}
+.sb-nav a{text-decoration:none;padding:9px 4px;border-bottom:1px solid var(--line);font-size:14px}
+.sb-nav a:hover{color:var(--accent)}
+.sb-theme{display:flex;gap:8px}
+.sb-theme button{flex:1;border:1px solid var(--line);border-radius:10px;padding:9px 0;
+  font:600 10px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;transition:border-color .2s,color .2s}
+.sb-theme button.on{border-color:var(--accent);color:var(--accent)}
+.sb-theme button:hover{border-color:var(--ink-soft)}
+.sb-mode{display:flex;align-items:center;gap:8px;margin-top:12px}
+.sb-acts{display:flex;flex-direction:column;gap:8px}
+.sb-acts button{border:1px solid var(--line);border-radius:10px;padding:9px 12px;text-align:left;
+  font-size:13.5px;transition:background .2s,color .2s,border-color .2s}
+.sb-acts button:hover{border-color:var(--ink-soft);background:var(--bg-raised)}
+.sb-acts button.danger:hover{border-color:var(--accent);color:var(--accent);background:transparent}
+.sb-about p{color:var(--ink-soft);font-size:13.5px;margin-bottom:8px}
+.sb-about a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--line)}
+.sb-note{color:var(--ink-soft);font-size:12.5px;margin-top:10px}
+.sb-open-btn{display:flex;align-items:center;justify-content:center;width:38px;height:38px;
+  border:1px solid var(--line);border-radius:10px;transition:background .2s,color .2s;flex:none}
+.sb-open-btn:hover{background:var(--ink);color:var(--bg)}
+.sb-open-btn svg{width:19px;height:19px}
+
 .modal{position:fixed;inset:0;z-index:220;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);
   display:flex;align-items:center;justify-content:center;padding:20px}
 .modal[hidden]{display:none}
@@ -352,10 +410,15 @@ footer{border-top:1px solid var(--ink);padding:clamp(56px,7vw,90px) 0 34px}
 
 <header id="header">
   <div class="wrap hd-in">
-    <a class="brand" href="#top" aria-label="Strata home">
-      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="4" width="16" height="3.4" rx="1.4"/><rect x="7" y="10.2" width="13" height="3.4" rx="1.4"/><rect x="4.8" y="16.4" width="10.5" height="3.4" rx="1.4"/></svg>
-      <b>Strata</b>
-    </a>
+    <div style="display:flex;align-items:center;gap:12px">
+      <button class="sb-open-btn" id="sbOpen" aria-label="Open sidebar" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9.5 4v16"/></svg>
+      </button>
+      <a class="brand" href="#top" aria-label="Strata home">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="4" width="16" height="3.4" rx="1.4"/><rect x="7" y="10.2" width="13" height="3.4" rx="1.4"/><rect x="4.8" y="16.4" width="10.5" height="3.4" rx="1.4"/></svg>
+        <b>Strata</b>
+      </a>
+    </div>
     <nav class="links mono" aria-label="Primary">
       <a href="#notes">Field notes</a>
       <a href="#capabilities">Capabilities</a>
@@ -387,6 +450,59 @@ footer{border-top:1px solid var(--ink);padding:clamp(56px,7vw,90px) 0 34px}
   <div class="menu-foot mono"><span>Strata Systems</span><span>Est. 2025</span></div>
 </div>
 
+<!-- sidebar: workspaces · navigate · preferences · settings · about -->
+<div class="sb-scrim" id="sbScrim" aria-hidden="true"></div>
+<aside class="sb" id="sidebar" aria-label="Strata sidebar" aria-hidden="true">
+  <div class="sb-head">
+    <span class="mono">Strata panel</span>
+    <button class="reset" id="sbClose" type="button" aria-label="Close sidebar">✕</button>
+  </div>
+  <div class="sb-body">
+    <div class="sb-sec">
+      <h4 class="mono">Your workspaces</h4>
+      <div class="sb-ws" id="sbWsList"></div>
+      <p class="sb-note">Recents are remembered in this browser. Open a locked one and you'll be asked for its password — keys stay on your device.</p>
+    </div>
+    <div class="sb-sec">
+      <h4 class="mono">Navigate</h4>
+      <nav class="sb-nav">
+        <a href="#notes" data-sbnav>01 — Field notes</a>
+        <a href="#capabilities" data-sbnav>02 — Capabilities</a>
+        <a href="#workspace" data-sbnav>03 — Live demo</a>
+        <a href="#process" data-sbnav>04 — Method</a>
+        <a href="#access" data-sbnav>05 — Access</a>
+      </nav>
+    </div>
+    <div class="sb-sec">
+      <h4 class="mono">Preferences</h4>
+      <div class="sb-theme" role="group" aria-label="Theme">
+        <button type="button" data-set="atelier">Atelier</button>
+        <button type="button" data-set="signal">Signal</button>
+        <button type="button" data-set="greenhouse">Greenhouse</button>
+      </div>
+      <div class="sb-mode"><span class="pill" id="sbModePill">mode —</span></div>
+    </div>
+    <div class="sb-sec">
+      <h4 class="mono">Settings</h4>
+      <div class="sb-acts">
+        <button type="button" id="sbNewWs">＋ New / switch workspace</button>
+        <button type="button" id="sbCopyLink2">Copy current workspace link</button>
+        <button type="button" id="sbClearKeys">Clear saved unlock keys</button>
+        <button type="button" id="sbClearHist">Clear workspace history</button>
+        <button type="button" id="sbResetDemo">Reset local demo data</button>
+        <button type="button" id="sbErase" class="danger">Erase all local data…</button>
+      </div>
+    </div>
+    <div class="sb-sec sb-about">
+      <h4 class="mono">About</h4>
+      <p><b>Strata</b> — a versioned decision ledger. Every spec, decision and release is an append-only layer, signed by a named human, and operable by your AI agent over WebMCP.</p>
+      <p>Built for the WebMCP Challenge · <span id="sbVer">v1.2.1</span> · MIT license.</p>
+      <p><a href="https://github.com/webmachinelearning/webmcp" target="_blank" rel="noopener">WebMCP specification ↗</a></p>
+      <p class="sb-note">No user accounts — privacy is per-workspace: optional passwords, unlock keys stored only in this browser. Server workspaces are shared by link.</p>
+    </div>
+  </div>
+</aside>
+
 <main id="top">
 
   <section class="hero">
@@ -402,7 +518,8 @@ footer{border-top:1px solid var(--ink);padding:clamp(56px,7vw,90px) 0 34px}
       </div>
     </div>
     <div class="hero-stage rv" style="transition-delay:.2s" id="stage">
-      <p class="stage-note mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v4h-4"/></svg>Fig. 00 — the live ledger · hover to dismantle · drag to spin</p>
+      <div class="stage-labels" id="stageLabels" aria-hidden="true"></div>
+      <p class="stage-note mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v4h-4"/></svg>Fig. 00 — the live ledger · click to dismantle &amp; label · drag to spin</p>
       <p class="hero-hint mono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>Scroll — the stack opens</p>
     </div>
   </section>
@@ -440,12 +557,93 @@ footer{border-top:1px solid var(--ink);padding:clamp(56px,7vw,90px) 0 34px}
         </div>
         <div class="figs">
           <figure class="rv">
-            <img src="https://picsum.photos/seed/strata-a/900/1100.jpg" alt="A workspace mid-review" loading="lazy">
+            <svg class="figsvg" viewBox="0 0 600 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Miniature of the Strata workspace">
+              <rect width="600" height="520" rx="14" fill="#F7F2E9"/>
+              <rect width="600" height="54" rx="14" fill="#EFE7D8"/>
+              <circle cx="30" cy="27" r="5" fill="#BC4B1F"/><circle cx="48" cy="27" r="5" fill="#D8CFBE"/><circle cx="66" cy="27" r="5" fill="#D8CFBE"/>
+              <rect x="250" y="19" width="100" height="16" rx="8" fill="#D8CFBE"/>
+              <rect x="470" y="15" width="100" height="24" rx="12" fill="#1C1814"/>
+              <rect x="36" y="76" width="528" height="46" rx="10" fill="#EAE2D3"/>
+              <text x="56" y="105" font-family="Consolas, Menlo, monospace" font-size="13" letter-spacing="2" fill="#6A6152">WS</text>
+              <text x="86" y="105" font-family="Consolas, Menlo, monospace" font-size="13" font-weight="bold" fill="#BC4B1F">DEMO01</text>
+              <text x="170" y="105" font-family="Georgia, serif" font-size="14" fill="#1C1814">Demo — Checkout Revamp</text>
+              <rect x="452" y="86" width="98" height="26" rx="13" fill="none" stroke="#2E7D4F" stroke-width="1.5"/>
+              <text x="466" y="104" font-family="Consolas, Menlo, monospace" font-size="11" fill="#2E7D4F">● LIVE</text>
+              <g>
+                <rect x="36" y="146" width="528" height="98" rx="12" fill="#EAE2D3"/>
+                <text x="56" y="176" font-family="Consolas, Menlo, monospace" font-size="12" letter-spacing="2" fill="#6A6152">L-1</text>
+                <rect x="96" y="162" width="58" height="20" rx="10" fill="#DCD2BF"/>
+                <text x="106" y="176" font-family="Consolas, Menlo, monospace" font-size="10" fill="#1C1814">SPEC</text>
+                <text x="56" y="206" font-family="Georgia, serif" font-size="16" fill="#1C1814">Checkout spec v1</text>
+                <rect x="452" y="158" width="86" height="24" rx="12" fill="none" stroke="#6A6152" stroke-width="1.2"/>
+                <text x="470" y="174" font-family="Consolas, Menlo, monospace" font-size="10" fill="#6A6152">OPEN</text>
+                <text x="56" y="228" font-family="Consolas, Menlo, monospace" font-size="11" fill="#6A6152">You · 9d ago</text>
+              </g>
+              <g>
+                <rect x="36" y="260" width="528" height="98" rx="12" fill="#EAE2D3"/>
+                <text x="56" y="290" font-family="Consolas, Menlo, monospace" font-size="12" letter-spacing="2" fill="#6A6152">L-2</text>
+                <rect x="96" y="276" width="88" height="20" rx="10" fill="#BC4B1F"/>
+                <text x="106" y="290" font-family="Consolas, Menlo, monospace" font-size="10" fill="#F6F0E6">DECISION</text>
+                <text x="56" y="320" font-family="Georgia, serif" font-size="16" fill="#1C1814">Adopt address autocomplete</text>
+                <rect x="452" y="272" width="98" height="24" rx="12" fill="#BC4B1F"/>
+                <text x="464" y="288" font-family="Consolas, Menlo, monospace" font-size="10" fill="#F6F0E6">APPROVED</text>
+                <text x="56" y="342" font-family="Consolas, Menlo, monospace" font-size="11" fill="#2E7D4F">approved by Mara</text>
+              </g>
+              <g>
+                <rect x="36" y="374" width="528" height="98" rx="12" fill="#EAE2D3"/>
+                <text x="56" y="404" font-family="Consolas, Menlo, monospace" font-size="12" letter-spacing="2" fill="#6A6152">L-3</text>
+                <rect x="96" y="390" width="96" height="20" rx="10" fill="#8A7F6C"/>
+                <text x="106" y="404" font-family="Consolas, Menlo, monospace" font-size="10" fill="#F6F0E6">PROTOTYPE</text>
+                <text x="56" y="434" font-family="Georgia, serif" font-size="16" fill="#1C1814">Prototype — one-page checkout</text>
+                <rect x="452" y="386" width="86" height="24" rx="12" fill="none" stroke="#6A6152" stroke-width="1.2"/>
+                <text x="470" y="402" font-family="Consolas, Menlo, monospace" font-size="10" fill="#6A6152">OPEN</text>
+                <text x="56" y="456" font-family="Consolas, Menlo, monospace" font-size="11" fill="#6A6152">You · 4d ago</text>
+              </g>
+            </svg>
             <figcaption class="mono">Fig. 01 — A workspace mid-review</figcaption>
           </figure>
           <figure class="rv" style="transition-delay:.12s">
-            <img src="https://picsum.photos/seed/strata-b/900/640.jpg" alt="The ledger, fourteen days in" loading="lazy">
-            <figcaption class="mono">Fig. 02 — The ledger, 14 days in</figcaption>
+            <svg class="figsvg" viewBox="0 0 640 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Miniature strata diagram of the ledger">
+              <rect width="640" height="460" rx="14" fill="#F7F2E9"/>
+              <text x="44" y="52" font-family="Georgia, serif" font-size="24" font-weight="bold" fill="#1C1814">Release 0.2 — strata</text>
+              <text x="44" y="78" font-family="Consolas, Menlo, monospace" font-size="12" fill="#6A6152">4 layers · 0 overwritten</text>
+              <line x1="44" y1="96" x2="596" y2="96" stroke="#1C1814" stroke-width="2"/>
+              <g>
+                <rect x="44" y="116" width="420" height="56" rx="10" fill="#DCD2BF"/>
+                <text x="62" y="140" font-family="Consolas, Menlo, monospace" font-size="11" letter-spacing="2" fill="#1C1814">L-1 · SPEC</text>
+                <text x="62" y="160" font-family="Georgia, serif" font-size="14" fill="#1C1814">Checkout spec v1</text>
+                <text x="480" y="140" font-family="Consolas, Menlo, monospace" font-size="11" fill="#6A6152">OPEN</text>
+                <text x="480" y="160" font-family="Consolas, Menlo, monospace" font-size="11" fill="#6A6152">Jun 01</text>
+              </g>
+              <g>
+                <rect x="44" y="184" width="420" height="56" rx="10" fill="#BC4B1F"/>
+                <text x="62" y="208" font-family="Consolas, Menlo, monospace" font-size="11" letter-spacing="2" fill="#F6F0E6">L-2 · DECISION</text>
+                <text x="62" y="228" font-family="Georgia, serif" font-size="14" fill="#F6F0E6">Adopt address autocomplete</text>
+                <text x="480" y="208" font-family="Consolas, Menlo, monospace" font-size="11" fill="#2E7D4F">APPROVED</text>
+                <text x="480" y="228" font-family="Consolas, Menlo, monospace" font-size="11" fill="#6A6152">· Mara</text>
+              </g>
+              <g>
+                <rect x="44" y="252" width="420" height="56" rx="10" fill="#8A7F6C"/>
+                <text x="62" y="276" font-family="Consolas, Menlo, monospace" font-size="11" letter-spacing="2" fill="#F6F0E6">L-3 · PROTOTYPE</text>
+                <text x="62" y="296" font-family="Georgia, serif" font-size="14" fill="#F6F0E6">One-page checkout</text>
+                <text x="480" y="276" font-family="Consolas, Menlo, monospace" font-size="11" fill="#6A6152">OPEN</text>
+                <text x="480" y="296" font-family="Consolas, Menlo, monospace" font-size="11" fill="#6A6152">Jun 03</text>
+              </g>
+              <g>
+                <rect x="44" y="320" width="420" height="56" rx="10" fill="#1C1814"/>
+                <text x="62" y="344" font-family="Consolas, Menlo, monospace" font-size="11" letter-spacing="2" fill="#F6F0E6">L-4 · RELEASE</text>
+                <text x="62" y="364" font-family="Georgia, serif" font-size="14" fill="#F6F0E6">Release 0.1 — dogfood</text>
+                <text x="480" y="344" font-family="Consolas, Menlo, monospace" font-size="11" fill="#6A6152">OPEN</text>
+                <text x="480" y="364" font-family="Consolas, Menlo, monospace" font-size="11" fill="#6A6152">Jun 04</text>
+              </g>
+              <line x1="44" y1="400" x2="596" y2="400" stroke="#1C1814" stroke-width="2"/>
+              <rect x="44" y="418" width="16" height="16" rx="4" fill="#DCD2BF"/><text x="68" y="431" font-family="Arial" font-size="12" fill="#1C1814">spec</text>
+              <rect x="128" y="418" width="16" height="16" rx="4" fill="#BC4B1F"/><text x="152" y="431" font-family="Arial" font-size="12" fill="#1C1814">decision</text>
+              <rect x="232" y="418" width="16" height="16" rx="4" fill="#8A7F6C"/><text x="256" y="431" font-family="Arial" font-size="12" fill="#1C1814">prototype</text>
+              <rect x="352" y="418" width="16" height="16" rx="4" fill="#1C1814"/><text x="376" y="431" font-family="Arial" font-size="12" fill="#1C1814">release</text>
+              <text x="596" y="431" font-family="Consolas, Menlo, monospace" font-size="11" fill="#6A6152" text-anchor="end">strata</text>
+            </svg>
+            <figcaption class="mono">Fig. 02 — The ledger, as a diagram</figcaption>
           </figure>
         </div>
       </div>
@@ -628,7 +826,7 @@ footer{border-top:1px solid var(--ink);padding:clamp(56px,7vw,90px) 0 34px}
       </div>
     </div>
     <div class="ft-bottom mono">
-      <span>© 2025 Strata Systems · MIT · <b id="build">v1.1.0</b></span>
+      <span>© 2025 Strata Systems · MIT · <b id="build">v1.2.1</b></span>
       <span>Built for the WebMCP Challenge</span>
       <span>Local time <b id="clock">—:—:—</b></span>
       <a href="#top" class="tlink" style="border:0;padding:0">Back to top ↑</a>
@@ -875,6 +1073,7 @@ function openServerWs(id){
     updateUrl(id);
     try{ localStorage.setItem('strata-last-ws', id); }catch(e){}
     connectStream(id);
+    addWsHistory(d.ws.id, d.ws.name);
     toast(`<b>Workspace ${id}</b> loaded from server — live sync on.`);
   }).catch(err => {
     if(err && err.locked){
@@ -892,6 +1091,7 @@ function openServerWs(id){
 function openLocalWs(id, name){
   setState({id, name}, localStore.data.layers, localStore.data.activity, 'local');
   try{ localStorage.setItem('strata-last-ws', id); }catch(e){}
+  addWsHistory(id, name);
   setConn('local mode · no sync', 'warn');
 }
  $('#wsCreate').addEventListener('click', async ()=>{
@@ -905,6 +1105,7 @@ function openLocalWs(id, name){
       $('#wsModal').hidden = true; $('#wsNameIn').value = ''; $('#wsPassIn').value = '';
       setState({id:d.id, name:d.name}, [], [], 'server');
       updateUrl(d.id); connectStream(d.id);
+      addWsHistory(d.id, name);
       toast(`<b>${d.id}</b> created${d.locked ? ' — <b>locked</b>. Share the link AND the password.' : '. Share the link — anyone who opens it sees this ledger.'}`);
     }catch(err){ toast('<b>Could not create:</b> ' + escXml(err.message)); }
   }else{
@@ -1214,7 +1415,7 @@ function buildDiagramSVG(){
   let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="Arial, Helvetica, sans-serif">`;
   s += `<rect width="${W}" height="${H}" fill="#F7F2E9"/>`;
   s += `<text x="60" y="56" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="bold" fill="#1C1814">${escXml(wsName)} — strata diagram</text>`;
-  s += `<text x="60" y="86" font-size="14" fill="#6A6152">Generated from the ledger on ${escXml(new Date().toLocaleString())} · ${L.length} layers · 0 overwritten</text>`;
+  s += `<text x="60" y="86" font-size="14" fill="#6A6152">Generated from the ledger on ${escXml(new Date().toLocaleString())} · ${L.length} ${L.length === 1 ? 'layer' : 'layers'} · 0 overwritten</text>`;
   s += `<line x1="60" y1="108" x2="${W-60}" y2="108" stroke="#1C1814" stroke-width="2"/>`;
   if(!L.length){
     s += `<text x="60" y="${headH+40}" font-size="16" fill="#6A6152">No layers yet.</text>`;
@@ -1278,7 +1479,12 @@ function showDiagram(){
   img.src = url;
 });
 addEventListener('keydown', e => {
-  if(e.key === 'Escape'){ $('#relModal').hidden = true; $('#diagModal').hidden = true; $('#wsModal').hidden = true; }
+  if(e.key === 'Escape'){
+    $('#relModal').hidden = true; $('#diagModal').hidden = true; $('#wsModal').hidden = true;
+    document.body.classList.remove('sb-open');
+    $('#sidebar')?.setAttribute('aria-hidden', 'true');
+    $('#sbOpen')?.setAttribute('aria-expanded', 'false');
+  }
 });
 
 /* ================= chrome (theme/menu/cursor/etc) ================= */
@@ -1287,6 +1493,7 @@ function setTheme(name, announce){
   document.documentElement.dataset.theme = name;
   try{ localStorage.setItem('strata-theme', name); }catch(e){}
   themeBtns.forEach(b => b.classList.toggle('on', b.dataset.set === name));
+  $$('.sb-theme button').forEach(b => b.classList.toggle('on', b.dataset.set === name));
   window.dispatchEvent(new CustomEvent('strata:theme', {detail:{name}}));
   if(announce) toast(`<b>Theme:</b> ${name}.`);
 }
@@ -1394,9 +1601,102 @@ if(fine && !reduced){
   $('#stage').addEventListener('mouseleave', shrink);
 }
 
+/* ================= sidebar (workspaces · prefs · settings) ================= */
+const SB_HIST_KEY = 'strata-ws-history';
+function wsHistory(){
+  try{ return JSON.parse(localStorage.getItem(SB_HIST_KEY)) || []; }catch{ return []; }
+}
+function wsHistorySave(list){
+  try{ localStorage.setItem(SB_HIST_KEY, JSON.stringify(list.slice(0, 12))); }catch{}
+}
+function addWsHistory(id, name){
+  if(!id) return;
+  const list = wsHistory().filter(w => w.id !== id);
+  list.unshift({id, name: name || id, ts: Date.now()});
+  wsHistorySave(list);
+  if(document.body.classList.contains('sb-open')) renderSidebar();
+}
+function renderSidebar(){
+  const list = wsHistory();
+  const box = $('#sbWsList');
+  box.innerHTML = list.length
+    ? list.map(w => `<button type="button" data-sbws="${w.id}">
+        <span><span class="code">${w.id}</span> · ${String(w.name).replace(/</g,'&lt;')}</span>
+        <small>opened ${ago(w.ts)}</small></button>`).join('')
+    : '<p class="sb-note">No workspaces yet — create or open one and it appears here.</p>';
+  const mp = $('#sbModePill');
+  if(state.mode === 'server' && state.ws){
+    mp.textContent = `server · ${state.ws.id}`;
+    mp.className = 'pill on';
+  }else if(state.serverUp){
+    mp.textContent = 'server ready';
+    mp.className = 'pill';
+  }else{
+    mp.textContent = 'local mode';
+    mp.className = 'pill warn';
+  }
+  $$('.sb-theme button').forEach(b => b.classList.toggle('on', b.dataset.set === document.documentElement.dataset.theme));
+}
+function sidebarToggle(open){
+  const on = (open === undefined) ? !document.body.classList.contains('sb-open') : open;
+  document.body.classList.toggle('sb-open', on);
+  $('#sidebar').setAttribute('aria-hidden', String(!on));
+  $('#sbOpen').setAttribute('aria-expanded', String(on));
+  if(on) renderSidebar();
+}
+ $('#sbOpen').addEventListener('click', ()=> sidebarToggle());
+ $('#sbClose').addEventListener('click', ()=> sidebarToggle(false));
+ $('#sbScrim').addEventListener('click', ()=> sidebarToggle(false));
+ $$('.sb-theme button').forEach(b => b.addEventListener('click', ()=> setTheme(b.dataset.set, true)));
+ $('#sbWsList').addEventListener('click', e => {
+  const btn = e.target.closest('button[data-sbws]');
+  if(!btn) return;
+  const id = btn.dataset.sbws;
+  sidebarToggle(false);
+  if(state.serverUp) openServerWs(id);
+  else toast('<b>Server unreachable.</b> Start it with <b>npm start</b>, then reopen this workspace.');
+});
+ $$('[data-sbnav]').forEach(a => a.addEventListener('click', ()=> sidebarToggle(false)));
+ $('#sbNewWs').addEventListener('click', ()=>{ sidebarToggle(false); $('#wsModal').hidden = false; });
+ $('#sbCopyLink2').addEventListener('click', ()=>{
+  if(!state.ws){ toast('<b>No workspace open.</b>'); return; }
+  navigator.clipboard?.writeText(location.href)
+    .then(()=> toast('<b>Link copied.</b> If the workspace is locked, share the password separately.'))
+    .catch(()=> toast('<b>Copy failed</b> — copy the address bar manually.'));
+});
+ $('#sbClearKeys').addEventListener('click', ()=>{
+  const removed = [];
+  try{
+    for(let i = 0; i < localStorage.length; i++){
+      const k = localStorage.key(i);
+      if(k && k.startsWith('strata-key-')) removed.push(k);
+    }
+    removed.forEach(k => localStorage.removeItem(k));
+  }catch{}
+  toast(removed.length
+    ? `<b>Cleared ${removed.length} unlock key${removed.length === 1 ? '' : 's'}.</b> Locked workspaces will ask for their password again.`
+    : '<b>No saved keys found.</b>');
+});
+ $('#sbClearHist').addEventListener('click', ()=>{
+  wsHistorySave([]); renderSidebar();
+  toast('<b>Workspace history cleared.</b>');
+});
+ $('#sbResetDemo').addEventListener('click', ()=> $('#resetDemo').click());
+ $('#sbErase').addEventListener('click', ()=>{
+  if(!confirm('Erase ALL local Strata data — theme, history, saved unlock keys and the local fallback ledger?\n\nServer workspaces are NOT affected (they live in the database).')){
+    return;
+  }
+  try{
+    Object.keys(localStorage).filter(k => k.startsWith('strata-')).forEach(k => localStorage.removeItem(k));
+  }catch{}
+  location.reload();
+});
+try{ $('#sbVer').textContent = $('#build').textContent; }catch{}
+
 /* ================= 3D — the stack mirrors the ledger =================
-   Foundation slab = the append-only ledger everything sits on.
-   Hover = dismantle (layers fan apart). Drag = rotate + tilt.       */
+   Foundation slab = the append-only ledger. Hover spreads; CLICK pins
+   a labelled dismantle with camera zoom-in; click again reassembles.
+   Slabs stagger/taper like the logo bars. Drag = rotate + tilt.      */
 const wrap = $('#stage');
 const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -1446,6 +1746,22 @@ foundation.castShadow = true;
 group.add(foundation);
 const clock = new THREE.Clock();
 
+/* ---- labels (HTML overlay, projected each frame) ---- */
+const labelsBox = $('#stageLabels');
+const foundLabel = document.createElement('div');
+foundLabel.className = 'slab-label found';
+foundLabel.innerHTML = '<b>DB</b> append-only ledger — the foundation';
+labelsBox.appendChild(foundLabel);
+let labelEls = [];
+const V = new THREE.Vector3();
+function placeLabel(el, obj){
+  obj.getWorldPosition(V); V.project(camera);
+  if(V.z > 1) return false;
+  const w = wrap.clientWidth, h = wrap.clientHeight;
+  el.style.transform = `translate(${(V.x*.5+.5)*w}px, ${(-V.y*.5+.5)*h}px) translate(-50%,-150%)`;
+  return true;
+}
+
 function syncStack(){
   const target = Math.min(Math.max(state.layers.length, 1), 12);
   while(slabs.length < target){
@@ -1457,6 +1773,16 @@ function syncStack(){
   while(slabs.length > target){ group.remove(slabs.pop()); }
   const view = state.layers.slice(-target);
   slabs.forEach((s, i) => { if(view[i]) s.material = mats[KIND_MAT[view[i].kind]] ?? mats[1]; });
+  labelEls.forEach(el => el.remove()); labelEls = [];
+  slabs.forEach((s, i) => {
+    const l = view[i];
+    const el = document.createElement('div');
+    el.className = 'slab-label';
+    el.innerHTML = l
+      ? `<b>${l.id}</b> ${l.kind} — ${String(l.title).replace(/</g,'&lt;').slice(0,34)}`
+      : '<b>—</b>';
+    labelsBox.appendChild(el); labelEls.push(el);
+  });
 }
 document.addEventListener('strata:changed', e => {
   syncStack();
@@ -1468,9 +1794,12 @@ syncStack();
 let spinAngle = -.4, spinVel = 0, dragging = false, lastX = 0, lastY = 0, tiltAngle = 0;
 let mNX = 0, mNY = 0, spread = 0, intro = 0, visible = true;
 let hoverT = 0, hoverTarget = 0;
+let pinT = 0, pinned = false;
 
+let pdX = 0, pdY = 0, pdT = 0;
 wrap.addEventListener('pointerdown', e => {
-  dragging = true; lastX = e.clientX; lastY = e.clientY;
+  dragging = true; pdX = e.clientX; pdY = e.clientY; pdT = performance.now();
+  lastX = e.clientX; lastY = e.clientY;
   wrap.setPointerCapture(e.pointerId);
 });
 wrap.addEventListener('pointermove', e => {
@@ -1480,7 +1809,17 @@ wrap.addEventListener('pointermove', e => {
   spinVel = dx * .0045; spinAngle += dx * .0045;
   tiltAngle = Math.max(-.5, Math.min(.7, tiltAngle + dy * .003));
 });
-addEventListener('pointerup', ()=> dragging = false);
+addEventListener('pointerup', e => {
+  if(dragging && pdT &&
+     Math.hypot(e.clientX - pdX, e.clientY - pdY) < 8 &&
+     performance.now() - pdT < 400){
+    pinned = !pinned;
+    toast(pinned
+      ? '<b>Dismantled.</b> Every layer labelled — click again to assemble.'
+      : '<b>Assembled.</b> One stack, one truth.');
+  }
+  pdT = 0; dragging = false;
+});
 if(fine && !reduced){
   wrap.addEventListener('mouseenter', ()=> hoverTarget = 1);
   wrap.addEventListener('mouseleave', ()=>{ hoverTarget = 0; dragging = false; });
@@ -1510,27 +1849,49 @@ const easeOut = t => 1 - Math.pow(1 - t, 3);
   intro = Math.min(1, intro + dt / 1.6);
   const e = easeOut(intro);
   hoverT += (hoverTarget - hoverT) * .07;
+  pinT  += ((pinned ? 1 : 0) - pinT) * .08;
+  const ex = Math.max(hoverT, pinT);
 
   const p = Math.max(0, Math.min(1, scrollY / (innerHeight * .9)));
   spread += ((p * .55) * e - spread) * .08;
 
   const t = clock.elapsedTime, N = slabs.length;
-  const gap = .62 * (1 + (reduced ? 0 : .9) * spread + (1 - e) * 1.6 + hoverT * 1.15);
-  const drift = hoverT * .6;
+  const gap = .62 * (1 + (reduced ? 0 : .9) * spread + (1 - e) * 1.6 + ex * 1.35);
+  const drift = ex * .6;
 
   slabs.forEach((s, i) => {
     if(s.userData.spawn < 1) s.userData.spawn = Math.min(1, s.userData.spawn + dt / .6);
     const spawnS = .2 + .8 * easeOut(s.userData.spawn);
     const off = i - (N - 1) / 2;
+    const base = (.6 + .4 * e) * spawnS;
+    const taper = 1 - Math.abs(off) * .035;          // logo-like taper toward top
     s.position.y = off * gap + (reduced ? 0 : Math.sin(t * 1.1 + i * .7) * .05);
-    s.position.x = off * drift * .5;
+    s.position.x = off * drift * .5 + (i % 2 ? 1 : -1) * .10 * (1 - ex); // staggered like the logo bars
     s.position.z = off * drift * .3;
-    s.rotation.y = off * (.16 + spread * .45) + hoverT * .35 * (i % 2 ? 1 : -1);
-    s.scale.setScalar((.6 + .4 * e) * spawnS);
+    s.rotation.y = off * (.16 + spread * .45) + ex * .35 * (i % 2 ? 1 : -1);
+    s.scale.set(base * taper, base, base * (1 - Math.abs(off) * .02));
   });
 
   foundation.position.y = -((N - 1) / 2) * gap - .52;
   foundation.scale.setScalar(.6 + .4 * e);
+
+  // camera zooms in while pinned/dismantled
+  const cz = 7.0 - 1.2 * pinT - .25 * hoverT;
+  camera.position.z += (cz - camera.position.z) * .07;
+  camera.lookAt(0, .1, 0);
+
+  // labels fade in with dismantle
+  const la = Math.max(0, Math.min(1, (ex - .5) / .5));
+  const laa = la * la;
+  if(laa > .01){
+    labelEls.forEach((el, i) => {
+      el.style.opacity = placeLabel(el, slabs[i]) ? laa : 0;
+    });
+    foundLabel.style.opacity = placeLabel(foundLabel, foundation) ? laa : 0;
+  }else{
+    labelEls.forEach(el => el.style.opacity = 0);
+    foundLabel.style.opacity = 0;
+  }
 
   if(!dragging){
     spinVel *= Math.exp(-2.2 * dt);
